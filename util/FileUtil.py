@@ -69,6 +69,15 @@ def getAllFilesByExt(dir, fileExt):
                 fileList.append(os.path.join(root, file))
     return fileList
 
+# 获取指定目录下的子一级目录
+def getSubDir(dir):
+    dir = unicode(dir)
+    dirList = []
+    for path in os.listdir(dir):
+        if os.path.isdir(os.path.join(dir, path)):
+            dirList.append(os.path.join(dir, path))
+    return dirList
+
 
 # 当文件目录不存在时，创建一个文件目录(创建多层目录)
 def mkdirNotExist(directory):

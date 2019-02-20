@@ -85,3 +85,10 @@ def mkdirNotExist(directory):
     directory = directory.decode('utf-8')
     if not os.path.exists(directory):
         os.makedirs(directory)
+
+
+# 判断文件或文件夹是否存在
+def isFileOrDirExist(filePath):
+    return os.path.exists(filePath)
+
+

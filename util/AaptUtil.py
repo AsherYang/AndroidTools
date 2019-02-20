@@ -95,7 +95,8 @@ class AaptUtil:
         reResultStr = u"application: label=\'([a-zA-Z0-9\u4e00-\u9fa5\.]+)"
         return re.findall(reResultStr, unicode(_translateUtf8(applicationInfo)))[0]
 
-    def getApkApplicationIconStr(self, apkPath, apkInfo=None):
+    # 获取apk 图标在apk中存在的路径
+    def getApkApplicationIconPathInApk(self, apkPath, apkInfo=None):
         if apkInfo is None:
             apkInfo = self.getApkInfo(apkPath)
         reApplicationInfoStr = r'application: label=.+'
@@ -103,19 +104,16 @@ class AaptUtil:
         reResultStr = r'icon=\'([a-zA-Z0-9_/\-\.]+)'
         return re.findall(reResultStr, applicationInfo)[0]
 
-    # 获取apk 图标
-    def writeApkApplicationIcon2Local(self, apkPath, apkInfo=None):
-        if apkInfo is None:
-            apkInfo = self.getApkInfo(apkPath)
-        reApplicationInfoStr = r'application: label=.+'
-        applicationInfo = re.findall(reApplicationInfoStr, apkInfo)[0]
-        reResultStr = r'icon=\'([a-zA-Z0-9_/\-\.]+)'
-        applicationIconStr = re.findall(reResultStr, applicationInfo)[0]
+    # 获取apk 图标路径，若不存在，则将图片写入apk包名命名的文件夹，文件为：icon_launcher.png
+    def getApkApplicationIconPath(self, apkPath, apkInfo=None):
+        applicationIconStr = self.getApkApplicationIconPathInApk(apkPath, apkInfo)
         apkZip = zipfile.ZipFile(apkPath)
         iconData = apkZip.read(applicationIconStr)
         iconDestPath = FileUtil.getFilePathWithName(apkPath)
         FileUtil.mkdirNotExist(iconDestPath)
         saveIconPath = os.path.join(iconDestPath, 'icon_launcher.png')
+        if FileUtil.isFileOrDirExist(saveIconPath):
+            return saveIconPath
         with open(saveIconPath, 'w+b') as saveIcon:
             saveIcon.write(iconData)
         return saveIconPath
@@ -143,6 +141,6 @@ if __name__ == '__main__':
     # print aaptUtil.getApkMinSdkVersion('F:\\nexus6p\\nexus6p_backup\\MobileAssistant_1.apk')
     # print aaptUtil.getApkTargetSdkVersion('F:\\nexus6p\\nexus6p_backup\\MobileAssistant_1.apk')
     # print aaptUtil.getApkApplicationLabel('F:\\nexus6p\\nexus6p_backup\\MobileAssistant_1.apk')
-    # print aaptUtil.getApkApplicationIconStr('F:\\nexus6p\\nexus6p_backup\\tv.danmaku.bili_5.34.1_5341000.apk')
-    # print aaptUtil.writeApkApplicationIcon2Local('F:\\nexus6p\\nexus6p_backup\\tv.danmaku.bili_5.34.1_5341000.apk')
-    print aaptUtil.getApkPermissionList('F:\\nexus6p\\nexus6p_backup\\tv.danmaku.bili_5.34.1_5341000.apk')
+    # print aaptUtil.getApkApplicationIconPathInApk('F:\\nexus6p\\nexus6p_backup\\tv.danmaku.bili_5.34.1_5341000.apk')
+    # print aaptUtil.getApkApplicationIconPath('F:\\nexus6p\\nexus6p_backup\\tv.danmaku.bili_5.34.1_5341000.apk')
+    # print aaptUtil.getApkPermissionList('F:\\nexus6p\\nexus6p_backup\\tv.danmaku.bili_5.34.1_5341000.apk')

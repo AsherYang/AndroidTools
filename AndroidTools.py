@@ -48,7 +48,10 @@ class Ui_MainWidget(object):
         views = self.menuBar.addMenu('&View')
         self.viewBaseInfoAction = QtGui.QAction(_fromUtf8("解析 apk"), mainWindow)
         self.viewBaseInfoAction.connect(self.viewBaseInfoAction, QtCore.SIGNAL('triggered()'), self.openBaseInfoView)
+        self.viewStrTransformAction = QtGui.QAction(_fromUtf8("&字符串转换"), mainWindow)
+        # self.viewStrTransformAction.connect(self.viewStrTransformAction, QtCore.SIGNAL('triggered()'), self.openBaseInfoView)
         views.addAction(self.viewBaseInfoAction)
+        views.addAction(self.viewStrTransformAction)
 
         # Tools
         tools = self.menuBar.addMenu('&Tools')
@@ -61,15 +64,19 @@ class Ui_MainWidget(object):
         self.mainLayout.setAlignment(QtCore.Qt.AlignTop)
         self.mainLayout.setContentsMargins(5, 2, 5, 2)
         # show log
+        self.logGroupBox = QtGui.QGroupBox(_fromUtf8("日志"))
+        self.logHBox = QtGui.QHBoxLayout()
         self.logTextEdit = QtGui.QTextEdit()
         self.logTextEdit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.logTextEdit.setFont(QtFontUtil().getFont('Monospace', 12))
         self.logTextEdit.connect(self.logTextEdit, QtCore.SIGNAL('appendLogSignal(QString)'), self.appendLog)
+        self.logHBox.addWidget(self.logTextEdit)
+        self.logGroupBox.setLayout(self.logHBox)
 
-        baseInfoWidget = BaseInfoWidget()
+        baseInfoWidget = BaseInfoWidget(logCallBack=self.emitAppendLogSignal)
         self.containerWidget.addWidget(baseInfoWidget)
         self.mainLayout.addWidget(self.containerWidget)
-        self.mainLayout.addWidget(self.logTextEdit)
+        self.mainLayout.addWidget(self.logGroupBox)
         self.centralwidget.setLayout(self.mainLayout)
 
         # 处理右键打开，或者直接拖文件到桌面图标启动。
@@ -121,7 +128,7 @@ class Ui_MainWidget(object):
 
     # 内容窗口替换为baseInfoWidget
     def openBaseInfoView(self):
-        baseInfoWidget = BaseInfoWidget()
+        baseInfoWidget = BaseInfoWidget(logCallBack=self.emitAppendLogSignal)
         # baseInfoWidget.button.connect(baseInfoWidget.button, QtCore.SIGNAL('clicked()'), self.buttonClickMethod)
         self.containerWidget.addWidget(baseInfoWidget)
         self.containerWidget.setCurrentWidget(baseInfoWidget)

@@ -14,16 +14,16 @@ import sys
 import threading
 
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtGui import QSizePolicy
+
 from PyQt4.QtNetwork import QLocalServer, QLocalSocket
 
 from constant import AppConstants
 from util import SupportFiles
 from util.EncodeUtil import _translate, _fromUtf8, _translateUtf8
-from util.QtFontUtil import QtFontUtil
+
 from util.RunSysCommand import RunSysCommand
 from win import WinCommandEnCoding
-from widget.BaseInfoWidget import BaseInfoWidget
+from view.BaseInfoView import BaseInfoView
 
 reload(sys)
 # print sys.getdefaultencoding()
@@ -63,20 +63,10 @@ class Ui_MainWidget(object):
         self.mainLayout = QtGui.QVBoxLayout()
         self.mainLayout.setAlignment(QtCore.Qt.AlignTop)
         self.mainLayout.setContentsMargins(5, 2, 5, 2)
-        # show log
-        self.logGroupBox = QtGui.QGroupBox(_fromUtf8("日志"))
-        self.logHBox = QtGui.QHBoxLayout()
-        self.logTextEdit = QtGui.QTextEdit()
-        self.logTextEdit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.logTextEdit.setFont(QtFontUtil().getFont('Monospace', 12))
-        self.logTextEdit.connect(self.logTextEdit, QtCore.SIGNAL('appendLogSignal(QString)'), self.appendLog)
-        self.logHBox.addWidget(self.logTextEdit)
-        self.logGroupBox.setLayout(self.logHBox)
 
-        baseInfoWidget = BaseInfoWidget(logCallBack=self.emitAppendLogSignal)
-        self.containerWidget.addWidget(baseInfoWidget)
+        baseInfoView = BaseInfoView()
+        self.containerWidget.addWidget(baseInfoView)
         self.mainLayout.addWidget(self.containerWidget)
-        self.mainLayout.addWidget(self.logGroupBox)
         self.centralwidget.setLayout(self.mainLayout)
 
         # 处理右键打开，或者直接拖文件到桌面图标启动。
@@ -85,7 +75,8 @@ class Ui_MainWidget(object):
         if len(argv) > 1:
             filePath = argv[1]
             if SupportFiles.hasSupportFile(filePath):
-                self.appendLog(_translate('', filePath, None))
+                # self.appendLog(_translate('', filePath, None))
+                pass
         # 监听新到来的连接(新的终端被打开)
         self.localServer.connect(localServer, QtCore.SIGNAL('newConnection()'), self.newLocalSocketConnection)
 
@@ -108,19 +99,9 @@ class Ui_MainWidget(object):
         # 由于客户端在发送的时候，就已经处理只发送(传递) 打开的文件路径参数，故此处不做校验处理
         # print SupportFiles.hasSupportFile(pathData)
         if pathData and SupportFiles.hasSupportFile(pathData):
-            self.appendLog(pathData)
+            # self.appendLog(pathData)
             # print pathData
-
-    # LOG 显示
-    def appendLog(self, logTxt):
-        self.logTextEdit.append(_translateUtf8(logTxt))
-
-    # 解决在子线程中刷新UI 的问题。' QWidget::repaint: Recursive repaint detected '
-    def appendLogSignal(self, logTxt):
-        pass
-
-    def emitAppendLogSignal(self, logTxt):
-        self.logTextEdit.emit(QtCore.SIGNAL('appendLogSignal(QString)'), logTxt)
+            pass
 
     # statusBar tip 显示
     def showStatusBarTip(self, msg):
@@ -128,23 +109,21 @@ class Ui_MainWidget(object):
 
     # 内容窗口替换为baseInfoWidget
     def openBaseInfoView(self):
-        baseInfoWidget = BaseInfoWidget(logCallBack=self.emitAppendLogSignal)
-        # baseInfoWidget.button.connect(baseInfoWidget.button, QtCore.SIGNAL('clicked()'), self.buttonClickMethod)
-        self.containerWidget.addWidget(baseInfoWidget)
-        self.containerWidget.setCurrentWidget(baseInfoWidget)
+        baseInfoView = BaseInfoView()
+        self.containerWidget.addWidget(baseInfoView)
+        self.containerWidget.setCurrentWidget(baseInfoView)
 
     def openCmdByThread(self):
-        self.appendLog(u'正在打开cmd终端..')
-        thread = threading.Thread(target=self.openCmdMethod, args=(self.emitAppendLogSignal,))
+        thread = threading.Thread(target=self.openCmdMethod)
         thread.setDaemon(True)
         thread.start()
 
-    def openCmdMethod(self, callback):
+    def openCmdMethod(self):
         runSyscmd = RunSysCommand()
         cmd = 'start cmd'
         result = runSyscmd.run(str(_translate("", cmd, None)))
         if result.returncode == 0:
-            callback(_fromUtf8('关闭了一个终端'))
+            print u'关闭了一个终端'
 
 
 class AndroidToolsMainWindow(QtGui.QMainWindow):

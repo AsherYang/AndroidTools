@@ -106,6 +106,7 @@ class AaptUtil:
 
     # 获取apk 图标路径，若不存在，则将图片写入apk包名命名的文件夹，文件为：icon_launcher.png
     def getApkApplicationIconPath(self, apkPath, apkInfo=None):
+        apkPath = unicode(apkPath)
         applicationIconStr = self.getApkApplicationIconPathInApk(apkPath, apkInfo)
         apkZip = zipfile.ZipFile(apkPath)
         iconData = apkZip.read(applicationIconStr)

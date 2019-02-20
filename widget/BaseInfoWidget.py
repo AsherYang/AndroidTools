@@ -134,7 +134,7 @@ class BaseInfoWidget(QtGui.QWidget):
         self.apkInfoMinSdkVersion.setText(minSdkVersion)
         self.apkInfoTargetSdkVersion.setText(targetSdkVersion)
         self.apkInfoPermissionList.setText(permissionList.join("\n"))
-        self.printLog(_fromUtf8("apk解析完成"))
+        self.printLog(_fromUtf8("%sapk解析完成" % appName))
 
     def updateAppInfoSignal(self, appName, appIconPath, packageName, launcherActivity, versionCode, versionName,
                             minSdkVersion, targetSdkVersion, permissionList):

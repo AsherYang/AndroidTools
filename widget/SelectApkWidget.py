@@ -81,13 +81,7 @@ class SelectApkWidget(QtGui.QWidget):
 
     def scanSrcApkMethod(self):
         filePath = unicode(QtGui.QFileDialog.getOpenFileName(None, u'选择文件', "D:\\", 'apk file(*.apk)'))
-        if not filePath:
-            return
-        filePath = QtCore.QDir.toNativeSeparators(filePath)
-        self.srcApkEdit.setText(filePath)
-        destPath = FileUtil.getFilePathWithName(filePath)
-        self.destApkEdit.setText(destPath)
-        # FileUtil.mkdirNotExist(destPath)
+        self.setEditByApkPath(filePath)
 
     def scanDestApkMethod(self):
         lastDir = self.destApkEdit.text() if self.destApkEdit.text() else "D:\\"
@@ -95,6 +89,15 @@ class SelectApkWidget(QtGui.QWidget):
         dirPath = QtCore.QDir.toNativeSeparators(dirPath)
         if dirPath:
             self.destApkEdit.setText(dirPath)
+
+    def setEditByApkPath(self, filePath):
+        if not filePath:
+            return
+        filePath = QtCore.QDir.toNativeSeparators(filePath)
+        self.srcApkEdit.setText(filePath)
+        destPath = FileUtil.getFilePathWithName(filePath)
+        self.destApkEdit.setText(destPath)
+        # FileUtil.mkdirNotExist(destPath)
 
     def analyApkInfoBtnClick(self):
         apkPath = unicode(self.srcApkEdit.text())
@@ -111,3 +114,9 @@ class SelectApkWidget(QtGui.QWidget):
 
     def printLogSignal(self, log):
         pass
+
+    # 接收拖拽文件的槽函数
+    def dropSrcFileSlot(self, apkPath):
+        filePath = unicode(apkPath)
+        self.setEditByApkPath(filePath)
+        self.analyApkInfoBtn.click()

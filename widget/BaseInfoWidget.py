@@ -57,6 +57,9 @@ class BaseInfoWidget(QtGui.QWidget):
         self.apkInfoVersionName = QtGui.QLineEdit()
         self.apkInfoMinSdkVersion = QtGui.QLineEdit()
         self.apkInfoTargetSdkVersion = QtGui.QLineEdit()
+        self.apkInfoPermissionList = QtGui.QTextEdit()
+        # 设置鼠标可操作
+        self.apkInfoAppName.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
 
         packageNameLabel = QtGui.QLabel()
         launcherActivityLabel = QtGui.QLabel()
@@ -73,7 +76,7 @@ class BaseInfoWidget(QtGui.QWidget):
 
         self.apkInfoAppName.connect(self.apkInfoAppName,
                                     QtCore.SIGNAL('updateAppInfoSignal(QString,QString,QString,QString,'
-                                                  'QString,QString,QString,QString)'),
+                                                  'QString,QString,QString,QString,QStringList)'),
                                     self.updateAppInfo)
 
         apkInfoForm.addRow(packageNameLabel, self.apkInfoPackageName)
@@ -82,14 +85,15 @@ class BaseInfoWidget(QtGui.QWidget):
         apkInfoForm.addRow(versionNameLabel, self.apkInfoVersionName)
         apkInfoForm.addRow(minSdkVersionLabel, self.apkInfoMinSdkVersion)
         apkInfoForm.addRow(targetSdkVersionLabel, self.apkInfoTargetSdkVersion)
-        apkInfoLeftVBox.addWidget(self.apkInfoIcon, 0, QtCore.Qt.AlignHCenter)
+        apkInfoLeftVBox.addWidget(self.apkInfoIcon, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         apkInfoLeftVBox.addWidget(self.apkInfoAppName, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        apkInfoLeftVBox.addStretch(1)
         apkInfoMiddleVBox.addLayout(apkInfoForm)
         apkInfoMiddleVBox.setContentsMargins(5, 0, 5, 0)
+        apkInfoRightVBox.addWidget(self.apkInfoPermissionList)
         apkInfoHBox.addLayout(apkInfoLeftVBox)
         apkInfoHBox.addLayout(apkInfoMiddleVBox)
-        apkInfoHBox.addStretch(1)
-        apkInfoHBox.addLayout(apkInfoRightVBox)
+        apkInfoHBox.addLayout(apkInfoRightVBox, 1)
         apkInfoGroupBox.setLayout(apkInfoHBox)
 
         mainLayout.addWidget(apkInfoGroupBox)
@@ -115,11 +119,11 @@ class BaseInfoWidget(QtGui.QWidget):
         permissionList = aaptUtil.getApkPermissionList(apkPath, apkInfo)
 
         self.emitUpdateAppInfoSignal(appLabel, iconPath, packageName, launcherActivity,
-                                     versionCode, versionName, minSdkVersion, targetSdkVersion)
+                                     versionCode, versionName, minSdkVersion, targetSdkVersion, permissionList)
 
     # 主线程中更新UI
     def updateAppInfo(self, appName, appIconPath, packageName, launcherActivity, versionCode, versionName,
-                      minSdkVersion, targetSdkVersion):
+                      minSdkVersion, targetSdkVersion, permissionList):
         self.apkInfoAppName.setText(appName)
         iconPixmap = QtGui.QPixmap(appIconPath)
         self.apkInfoIcon.setPixmap(iconPixmap)
@@ -129,17 +133,18 @@ class BaseInfoWidget(QtGui.QWidget):
         self.apkInfoVersionName.setText(versionName)
         self.apkInfoMinSdkVersion.setText(minSdkVersion)
         self.apkInfoTargetSdkVersion.setText(targetSdkVersion)
+        self.apkInfoPermissionList.setText(permissionList.join("\n"))
         self.printLog(_fromUtf8("apk解析完成"))
 
     def updateAppInfoSignal(self, appName, appIconPath, packageName, launcherActivity, versionCode, versionName,
-                            minSdkVersion, targetSdkVersion):
+                            minSdkVersion, targetSdkVersion, permissionList):
         pass
 
     def emitUpdateAppInfoSignal(self, appName, appIconPath, packageName, launcherActivity, versionCode, versionName,
-                                minSdkVersion, targetSdkVersion):
+                                minSdkVersion, targetSdkVersion, permissionList):
         self.apkInfoAppName.emit(QtCore.SIGNAL('updateAppInfoSignal(QString,QString,QString,QString,QString,'
-                                               'QString,QString,QString)'), appName, appIconPath, packageName,
-                                 launcherActivity, versionCode, versionName, minSdkVersion, targetSdkVersion)
+                                               'QString,QString,QString, QStringList)'), appName, appIconPath, packageName,
+                                 launcherActivity, versionCode, versionName, minSdkVersion, targetSdkVersion,permissionList)
 
     def printLog(self, log):
         self.emit(QtCore.SIGNAL('printLogSignal(QString)'), log)

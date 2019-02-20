@@ -23,6 +23,7 @@ from util.EncodeUtil import _translate, _fromUtf8, _translateUtf8
 from util.QtFontUtil import QtFontUtil
 from util.RunSysCommand import RunSysCommand
 from win import WinCommandEnCoding
+from widget.BaseInfoWidget import BaseInfoWidget
 
 reload(sys)
 # print sys.getdefaultencoding()
@@ -38,8 +39,16 @@ class Ui_MainWidget(object):
         mainWindow.setObjectName(_fromUtf8("MainWindow"))
         self.centralwidget = QtGui.QWidget(mainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
+        # container Widget
+        self.containerWidget = QtGui.QStackedWidget()
         self.statusBar = QtGui.QStatusBar(mainWindow)
         self.menuBar = QtGui.QMenuBar(mainWindow)
+
+        # Views
+        views = self.menuBar.addMenu('&View')
+        self.viewBaseInfoAction = QtGui.QAction(_fromUtf8("解析 apk"), mainWindow)
+        self.viewBaseInfoAction.connect(self.viewBaseInfoAction, QtCore.SIGNAL('triggered()'), self.openBaseInfoView)
+        views.addAction(self.viewBaseInfoAction)
 
         # Tools
         tools = self.menuBar.addMenu('&Tools')
@@ -57,6 +66,9 @@ class Ui_MainWidget(object):
         self.logTextEdit.setFont(QtFontUtil().getFont('Monospace', 12))
         self.logTextEdit.connect(self.logTextEdit, QtCore.SIGNAL('appendLogSignal(QString)'), self.appendLog)
 
+        baseInfoWidget = BaseInfoWidget()
+        self.containerWidget.addWidget(baseInfoWidget)
+        self.mainLayout.addWidget(self.containerWidget)
         self.mainLayout.addWidget(self.logTextEdit)
         self.centralwidget.setLayout(self.mainLayout)
 
@@ -107,6 +119,13 @@ class Ui_MainWidget(object):
     def showStatusBarTip(self, msg):
         self.statusBar.showMessage(msg)
 
+    # 内容窗口替换为baseInfoWidget
+    def openBaseInfoView(self):
+        baseInfoWidget = BaseInfoWidget()
+        # baseInfoWidget.button.connect(baseInfoWidget.button, QtCore.SIGNAL('clicked()'), self.buttonClickMethod)
+        self.containerWidget.addWidget(baseInfoWidget)
+        self.containerWidget.setCurrentWidget(baseInfoWidget)
+
     def openCmdByThread(self):
         self.appendLog(u'正在打开cmd终端..')
         thread = threading.Thread(target=self.openCmdMethod, args=(self.emitAppendLogSignal,))
@@ -126,6 +145,7 @@ class AndroidToolsMainWindow(QtGui.QMainWindow):
         QtGui.QMainWindow.__init__(self)
         screen = QtGui.QDesktopWidget().screenGeometry()
         self.resize(screen.width() / 8 * 3, screen.height() / 6 * 3)
+        # self.setFixedSize(screen.width() / 8 * 3, screen.height() / 6 * 3)
         self.setWindowTitle(AppConstants.ApplicationName)
         self.setAcceptDrops(True)
 

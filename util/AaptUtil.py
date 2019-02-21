@@ -51,40 +51,58 @@ class AaptUtil:
         if apkInfo is None:
             apkInfo = self.getApkInfo(apkPath)
         reResultStr = r'package: name=\'([a-zA-Z0-9\.]+)'
-        return re.findall(reResultStr, apkInfo)[0]
+        apkPackageNameList = re.findall(reResultStr, apkInfo)
+        if apkPackageNameList:
+            return apkPackageNameList[0]
+        return u'未获取到包名'
 
     # 获取apk启动的activity
     def getApkLauncherActivity(self, apkPath, apkInfo=None):
         if apkInfo is None:
             apkInfo = self.getApkInfo(apkPath)
         reResultStr = r'launchable-activity: name=\'([a-zA-Z0-9\.]+)'
-        return re.findall(reResultStr, apkInfo)[0]
+        launchActivityList = re.findall(reResultStr, apkInfo)
+        if launchActivityList:
+            return launchActivityList[0]
+        return u'未获取到启动页'
 
     # 获取apk 版本号
     def getApkVersionCode(self, apkPath, apkInfo=None):
         if apkInfo is None:
             apkInfo = self.getApkInfo(apkPath)
         reResultStr = r'versionCode=\'([a-zA-Z0-9\.]+)'
-        return re.findall(reResultStr, apkInfo)[0]
+        versionCodeList = re.findall(reResultStr, apkInfo)
+        if versionCodeList:
+            return versionCodeList[0]
+        return u'未获取到versionCode'
 
     def getApkVersionName(self, apkPath, apkInfo=None):
         if apkInfo is None:
             apkInfo = self.getApkInfo(apkPath)
         reResultStr = r'versionName=\'([a-zA-Z0-9\.]+)'
-        return re.findall(reResultStr, apkInfo)[0]
+        versionNameList = re.findall(reResultStr, apkInfo)
+        if versionNameList:
+            return versionNameList[0]
+        return u'未获取到versionName'
 
     # 获取apk 目标设备sdk版本
     def getApkMinSdkVersion(self, apkPath, apkInfo=None):
         if apkInfo is None:
             apkInfo = self.getApkInfo(apkPath)
         reResultStr = r'sdkVersion.\'([a-zA-Z0-9\.]+)'
-        return re.findall(reResultStr, apkInfo)[0]
+        minSdkVersionList = re.findall(reResultStr, apkInfo)
+        if minSdkVersionList:
+            return minSdkVersionList[0]
+        return u'未获取到最小SDK版本'
 
     def getApkTargetSdkVersion(self, apkPath, apkInfo=None):
         if apkInfo is None:
             apkInfo = self.getApkInfo(apkPath)
         reResultStr = r'targetSdkVersion.\'([a-zA-Z0-9\.]+)'
-        return re.findall(reResultStr, apkInfo)[0]
+        targetSdkVersionList = re.findall(reResultStr, apkInfo)
+        if targetSdkVersionList:
+            return targetSdkVersionList[0]
+        return u'未获取到适配SDK版本'
 
     # 获取apk 标签名
     def getApkApplicationLabel(self, apkPath, apkInfo=None):
@@ -93,7 +111,10 @@ class AaptUtil:
         reApplicationInfoStr = r'application: label=.+'
         applicationInfo = re.findall(reApplicationInfoStr, apkInfo)[0]
         reResultStr = u"application: label=\'([a-zA-Z0-9\u4e00-\u9fa5\.]+)"
-        return re.findall(reResultStr, unicode(_translateUtf8(applicationInfo)))[0]
+        applicationLabelList = re.findall(reResultStr, unicode(_translateUtf8(applicationInfo)))
+        if applicationLabelList:
+            return applicationLabelList[0]
+        return u'未获取到应用名'
 
     # 获取apk 图标在apk中存在的路径
     def getApkApplicationIconPathInApk(self, apkPath, apkInfo=None):
@@ -102,12 +123,17 @@ class AaptUtil:
         reApplicationInfoStr = r'application: label=.+'
         applicationInfo = re.findall(reApplicationInfoStr, apkInfo)[0]
         reResultStr = r'icon=\'([a-zA-Z0-9_/\-\.]+)'
-        return re.findall(reResultStr, applicationInfo)[0]
+        applicationIconInApkList = re.findall(reResultStr, applicationInfo)
+        if applicationIconInApkList:
+            return applicationIconInApkList[0]
+        return None
 
     # 获取apk 图标路径，若不存在，则将图片写入apk包名命名的文件夹，文件为：icon_launcher.png
     def getApkApplicationIconPath(self, apkPath, apkInfo=None):
         apkPath = unicode(apkPath)
         applicationIconStr = self.getApkApplicationIconPathInApk(apkPath, apkInfo)
+        if not applicationIconStr:
+            return u'未获取到应用图标'
         apkZip = zipfile.ZipFile(apkPath)
         iconData = apkZip.read(applicationIconStr)
         iconDestPath = FileUtil.getFilePathWithName(apkPath)
@@ -134,7 +160,7 @@ class AaptUtil:
 
 if __name__ == '__main__':
     aaptUtil = AaptUtil()
-    # print aaptUtil.getApkInfo('F:\\nexus6p\\nexus6p_backup\\tv.danmaku.bili_5.34.1_5341000.apk')
+    print aaptUtil.getApkInfo('C:\\Users\\20251572\\Desktop\\XTCLauncher.apk')
     # print aaptUtil.getApkPackageName('F:\\nexus6p\\nexus6p_backup\\MobileAssistant_1.apk')
     # print aaptUtil.getApkLauncherActivity('F:\\nexus6p\\nexus6p_backup\\MobileAssistant_1.apk')
     # print aaptUtil.getApkVersionCode('F:\\nexus6p\\nexus6p_backup\\MobileAssistant_1.apk')

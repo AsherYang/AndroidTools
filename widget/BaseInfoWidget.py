@@ -70,7 +70,7 @@ class BaseInfoWidget(QtGui.QWidget):
         packageNameLabel.setText(_fromUtf8("包名称:"))
         launcherActivityLabel.setText(_fromUtf8("启动页:"))
         versionCodeLabel.setText(_fromUtf8("版本号:"))
-        versionNameLabel.setText(_fromUtf8(" 版本名:"))
+        versionNameLabel.setText(_fromUtf8("版本名:"))
         minSdkVersionLabel.setText(_fromUtf8("最小SDK:"))
         targetSdkVersionLabel.setText(_fromUtf8("目标SDK:"))
 

@@ -24,6 +24,7 @@ from util.EncodeUtil import _translate, _fromUtf8, _translateUtf8
 from util.RunSysCommand import RunSysCommand
 from win import WinCommandEnCoding
 from view.BaseInfoView import BaseInfoView
+from view.StrTransformView import StrTransformView
 
 reload(sys)
 # print sys.getdefaultencoding()
@@ -49,7 +50,7 @@ class Ui_MainWidget(object):
         self.viewBaseInfoAction = QtGui.QAction(_fromUtf8("解析 apk"), mainWindow)
         self.viewBaseInfoAction.connect(self.viewBaseInfoAction, QtCore.SIGNAL('triggered()'), self.openBaseInfoView)
         self.viewStrTransformAction = QtGui.QAction(_fromUtf8("&字符串转换"), mainWindow)
-        # self.viewStrTransformAction.connect(self.viewStrTransformAction, QtCore.SIGNAL('triggered()'), self.openBaseInfoView)
+        self.viewStrTransformAction.connect(self.viewStrTransformAction, QtCore.SIGNAL('triggered()'), self.openStrTransformView)
         views.addAction(self.viewBaseInfoAction)
         views.addAction(self.viewStrTransformAction)
 
@@ -107,11 +108,17 @@ class Ui_MainWidget(object):
     def showStatusBarTip(self, msg):
         self.statusBar.showMessage(msg)
 
-    # 内容窗口替换为baseInfoWidget
+    # 内容窗口替换为baseInfoView 视图窗口
     def openBaseInfoView(self):
         baseInfoView = BaseInfoView()
         self.containerWidget.addWidget(baseInfoView)
         self.containerWidget.setCurrentWidget(baseInfoView)
+
+    # 内容窗口替换为strTransformView 视图窗口
+    def openStrTransformView(self):
+        strTransformView = StrTransformView()
+        self.containerWidget.addWidget(strTransformView)
+        self.containerWidget.setCurrentWidget(strTransformView)
 
     def openCmdByThread(self):
         thread = threading.Thread(target=self.openCmdMethod)

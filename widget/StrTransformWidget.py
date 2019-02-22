@@ -6,13 +6,15 @@ Author: AsherYang
 Email : ouyangfan1991@gmail.com
 Date  : 2019/2/21
 Desc  : 字符串转换窗口
+
+https://blog.csdn.net/suifeng_ly/article/details/82527237
 """
 
 import sys
 
 from PyQt4 import QtCore, QtGui
 
-from util.EncodeUtil import _fromUtf8
+from util.EncodeUtil import _fromUtf8, _translate, _translateUtf8
 
 reload(sys)
 # print sys.getdefaultencoding()
@@ -63,6 +65,11 @@ class StrTransformWidget(QtGui.QWidget):
         operateHBox.addWidget(self.operateUrlEncodeBtn)
         operateHBox.addWidget(self.operateUrlDecodeBtn)
 
+        clearEditAction = QtGui.QAction(_fromUtf8("清空数据"), mainLayout)
+        clearEditAction.connect(clearEditAction, QtCore.SIGNAL('triggered()'), self.clearEdit)
+        clearEditAction.setShortcut('Ctrl+D')
+        self.addAction(clearEditAction)
+
         srcStrGroupBox.setLayout(srcStrHBox)
         operateGropBox.setLayout(operateHBox)
         destStrGropBox.setLayout(destStrHBox)
@@ -77,26 +84,50 @@ class StrTransformWidget(QtGui.QWidget):
         self.destStrEdit.clear()
 
     def ascii2UnicodeBtnClick(self):
-        self.clearEdit()
+        pass
 
     def unicode2AsciiBtnClick(self):
-        self.clearEdit()
+        srcStr = unicode(self.srcStrEdit.toPlainText())
+        ret = ''
+        for v in srcStr:
+            char = hex(ord(v))
+            ret += char
+        print ret
 
     def unicode2ChineseBtnClick(self):
-        self.clearEdit()
+        srcStr = unicode(self.srcStrEdit.toPlainText())
+        print _translateUtf8(srcStr)
+        print _fromUtf8(srcStr)
+        print srcStr.encode('utf-8')
+        print _translate("", srcStr, None)
+        self.destStrEdit.setText(_translateUtf8(srcStr))
 
+    # success
     def chinese2UnicodeBtnClick(self):
-        self.clearEdit()
+        srcStr = unicode(self.srcStrEdit.toPlainText())
+        ret = ''
+        for v in srcStr:
+            char = hex(ord(v)).replace('0x', '')
+            # print len(char)
+            if len(char) < 4:
+                res = self.genZeroStr(4-len(char)) + char
+                ret += '\\u' + res
+            else:
+                ret += '\\u' + char
+        # print ret
+        self.destStrEdit.setText(ret)
 
     def utf82ChineseBtnClick(self):
-        self.clearEdit()
+        pass
 
     def chinese2Utf8BtnClick(self):
-        self.clearEdit()
+        pass
 
     def urlEncodeBtnClick(self):
-        self.clearEdit()
+        pass
 
     def urlDecodeBtnClick(self):
-        self.clearEdit()
+        pass
 
+    def genZeroStr(self, len):
+        return '0'*len

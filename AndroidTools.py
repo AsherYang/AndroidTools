@@ -25,6 +25,7 @@ from util.RunSysCommand import RunSysCommand
 from win import WinCommandEnCoding
 from view.BaseInfoView import BaseInfoView
 from view.StrTransformView import StrTransformView
+from view.AdbToolView import AdbToolView
 
 reload(sys)
 # print sys.getdefaultencoding()
@@ -59,6 +60,9 @@ class Ui_MainWidget(object):
         self.toolOpenCmdAction = QtGui.QAction(_fromUtf8('打开cmd终端'), mainWindow)
         self.toolOpenCmdAction.connect(self.toolOpenCmdAction, QtCore.SIGNAL('triggered()'), self.openCmdByThread)
         tools.addAction(self.toolOpenCmdAction)
+        self.toolAdbAction = QtGui.QAction(_fromUtf8('adb 工具'), mainWindow)
+        self.toolAdbAction.connect(self.toolAdbAction, QtCore.SIGNAL('triggered()'), self.openAdbToolView)
+        tools.addAction(self.toolAdbAction)
 
         # 布局开始
         self.mainLayout = QtGui.QVBoxLayout()
@@ -131,6 +135,12 @@ class Ui_MainWidget(object):
         result = runSyscmd.run(str(_translate("", cmd, None)))
         if result.returncode == 0:
             print u'关闭了一个终端'
+
+    def openAdbToolView(self):
+        adbToolView = AdbToolView()
+        adbToolView.setStatusTip(_fromUtf8("使用adb工具时，需要USB连接上设备"))
+        self.containerWidget.addWidget(adbToolView)
+        self.containerWidget.setCurrentWidget(adbToolView)
 
 
 class AndroidToolsMainWindow(QtGui.QMainWindow):

@@ -80,6 +80,10 @@ class AdbUtil:
                     self._serial_no = deviceInfoList[0].serialNo
         return self._serial_no
 
+    # 设置当前设备序列号
+    def setCurrentSerialNo(self, currentSerialNo):
+        self._serial_no = currentSerialNo
+
     # 获取设备当前app包名
     def getDeviceTopPackageName(self):
         # -1: last one
@@ -98,6 +102,26 @@ class AdbUtil:
         # 不匹配 空格 : {
         reResultStr = r'[a-zA-Z0-9\.]+/.[a-zA-Z0-9\.]+'
         return re.findall(reResultStr, result)[0]
+
+    # 获取设备上所有APP 的包名
+    def getDeviceAllPackage(self):
+        cmd = str('%s -s %s shell pm list packages' % (adbCmd, self.getCurrentSerialNo()))
+        result = self._runSysCmd.run(cmd, should_process=False).stdout.read()
+        return result
+
+    # 向设备截屏
+    # TODO save path to local
+    def doScreenCap(self):
+        cmd = str('%s -s %s shell /system/bin/screencap -p /sdcard/screenshot.png' % (adbCmd, self.getCurrentSerialNo()))
+        result = self._runSysCmd.run(cmd, should_process=False).stdout.read()
+        return result
+
+    # 向设备录屏
+    # TODO save path to local
+    def doScreenRecord(self):
+        cmd = str('%s -s %s shell screenrecord /sdcard/demo.mp4' % (adbCmd, self.getCurrentSerialNo()))
+        result = self._runSysCmd.run(cmd, should_process=False).stdout.read()
+        return result
 
 
 class DeviceInfo:

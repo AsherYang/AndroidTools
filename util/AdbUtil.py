@@ -12,6 +12,9 @@ import os
 import platform
 import re
 from util.RunSysCommand import RunSysCommand
+from util import FileUtil
+from util.DateUtil import DateUtil
+from util.EncodeUtil import _fromUtf8
 
 # 判断系统类型
 system = platform.system()
@@ -38,6 +41,7 @@ class AdbUtil:
     def __init__(self):
         self._runSysCmd = RunSysCommand()
         self._serial_no = None
+        self._lastScreenRecordPath = None
 
     # 获取设备列表(调用获取设备函数时，请使用adb 连接上手机，下同。)
     def getDeviceList(self):
@@ -110,17 +114,67 @@ class AdbUtil:
         return result
 
     # 向设备截屏
-    # TODO save path to local
-    def doScreenCap(self):
-        cmd = str('%s -s %s shell /system/bin/screencap -p /sdcard/screenshot.png' % (adbCmd, self.getCurrentSerialNo()))
+    def doScreenCap(self, deviceModel=None, callBack=None):
+        screenPath = '/sdcard/screenshot_'
+        if deviceModel:
+            screenPath += deviceModel + "_"
+        screenPath += str(DateUtil().getCurrentTimeStamp()) + ".png"
+        destPath = "d:" + os.sep + "adbTools" + os.sep
+        FileUtil.mkdirNotExist(destPath)
+        cmd = str('%s -s %s shell /system/bin/screencap -p %s ' % (adbCmd, self.getCurrentSerialNo(), screenPath))
         result = self._runSysCmd.run(cmd, should_process=False).stdout.read()
+        if 'not found' in result:
+            if callBack:
+                callBack(_fromUtf8("未获取到设备, 请检查USB连接~"))
+            return result
+        cmd2 = str('%s -s %s pull %s %s' % (adbCmd, self.getCurrentSerialNo(), screenPath, destPath))
+        result = self._runSysCmd.run(cmd2, should_process=False).stdout.read()
+        if "file pulled" in result:
+            # os.startfile('d:\\adbTools')
+            self._runSysCmd.run(['explorer.exe', destPath])
         return result
 
     # 向设备录屏
-    # TODO save path to local
-    def doScreenRecord(self):
-        cmd = str('%s -s %s shell screenrecord /sdcard/demo.mp4' % (adbCmd, self.getCurrentSerialNo()))
+    def doStartScreenRecord(self, deviceModel=None, callBack=None):
+        recordPath = '/sdcard/demo_'
+        if deviceModel:
+            recordPath += deviceModel + "_"
+        recordPath += str(DateUtil().getCurrentTimeStamp()) + ".mp4"
+        self._lastScreenRecordPath = recordPath
+        cmd = str('%s -s %s shell screenrecord %s' % (adbCmd, self.getCurrentSerialNo(), recordPath))
+        callBack(_fromUtf8("正在进行录屏, 如需暂停请点击结束录屏按钮.."))
         result = self._runSysCmd.run(cmd, should_process=False).stdout.read()
+        if callBack and 'not found' in result:
+            callBack(_fromUtf8("未获取到设备, 请检查USB连接~"))
+        return result
+
+    # 暂停录屏
+    # https://stackoverflow.com/questions/25185746/stop-adb-screenrecord-from-java
+    def doStopScreenRecord(self, callBack=None):
+        if not self._lastScreenRecordPath:
+            if callBack:
+                callBack(_fromUtf8("请先进行录屏操作~"))
+            return None
+        recordPath = self._lastScreenRecordPath
+        destPath = "d:" + os.sep + "adbTools" + os.sep
+        FileUtil.mkdirNotExist(destPath)
+        recordPidCmd = str('%s -s %s shell ps | %s screenrecord' % (adbCmd, self.getCurrentSerialNo(), findCmd))
+        recordPidResult = self._runSysCmd.run(recordPidCmd, should_process=False).stdout.read()
+        print 'recordRe: ', recordPidResult
+        if 'not found' in recordPidResult:
+            if callBack:
+                callBack(_fromUtf8("未获取到设备, 请检查USB连接~"))
+            return recordPidResult
+        reRecordPidStr = r'[0-9]+'
+        recordPid = re.findall(reRecordPidStr, recordPidResult)[0]
+        print 'recordPid: ', recordPid
+        killScreenRecordCmd = str('%s -s %s shell kill -2 %s' % (adbCmd, self.getCurrentSerialNo(), recordPid))
+        self._runSysCmd.run(killScreenRecordCmd, should_process=False).stdout.read()
+        cmd = str('%s -s %s pull %s %s' % (adbCmd, self.getCurrentSerialNo(), recordPath, destPath))
+        result = self._runSysCmd.run(cmd, should_process=False).stdout.read()
+        if "file pulled" in result:
+            # os.startfile('d:\\adbTools')
+            self._runSysCmd.run(['explorer.exe', destPath])
         return result
 
 

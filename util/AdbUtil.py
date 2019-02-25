@@ -142,7 +142,7 @@ class AdbUtil:
         recordPath += str(DateUtil().getCurrentTimeStamp()) + ".mp4"
         self._lastScreenRecordPath = recordPath
         cmd = str('%s -s %s shell screenrecord %s' % (adbCmd, self.getCurrentSerialNo(), recordPath))
-        callBack(_fromUtf8("正在进行录屏, 如需暂停请点击结束录屏按钮.."))
+        callBack(_fromUtf8("正在进行录屏, 如需暂停请点击'结束录屏'按钮.."))
         result = self._runSysCmd.run(cmd, should_process=False).stdout.read()
         if callBack and 'not found' in result:
             callBack(_fromUtf8("未获取到设备, 请检查USB连接~"))

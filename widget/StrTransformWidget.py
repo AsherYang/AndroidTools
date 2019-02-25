@@ -33,7 +33,9 @@ class StrTransformWidget(QtGui.QWidget):
         destStrGropBox = QtGui.QGroupBox(_fromUtf8("目标字符串"))
 
         srcStrHBox = QtGui.QHBoxLayout()
-        operateHBox = QtGui.QHBoxLayout()
+        operateVBox = QtGui.QVBoxLayout()
+        operateHBoxOne = QtGui.QHBoxLayout()
+        operateHBoxSecond = QtGui.QHBoxLayout()
         destStrHBox = QtGui.QHBoxLayout()
         self.srcStrEdit = QtGui.QTextEdit()
         self.destStrEdit = QtGui.QTextEdit()
@@ -48,6 +50,8 @@ class StrTransformWidget(QtGui.QWidget):
         self.operateChinese2Utf8Btn = QtGui.QPushButton(_fromUtf8("中文转UTF8"))
         self.operateUrlEncodeBtn = QtGui.QPushButton(_fromUtf8("URLEncode编码"))
         self.operateUrlDecodeBtn = QtGui.QPushButton(_fromUtf8("URLDecode解码"))
+        self.operateWin2UnixPathBtn = QtGui.QPushButton(_fromUtf8("Win路径转Linux"))
+        self.operateUnix2WinPathBtn = QtGui.QPushButton(_fromUtf8("Linux路径转Win"))
         self.operateAscii2UnicodeBtn.connect(self.operateAscii2UnicodeBtn, QtCore.SIGNAL('clicked()'), self.ascii2UnicodeBtnClick)
         self.operateUnicode2AsciiBtn.connect(self.operateUnicode2AsciiBtn, QtCore.SIGNAL('clicked()'), self.unicode2AsciiBtnClick)
         self.operateUnicode2ChineseBtn.connect(self.operateUnicode2ChineseBtn, QtCore.SIGNAL('clicked()'), self.unicode2ChineseBtnClick)
@@ -56,14 +60,21 @@ class StrTransformWidget(QtGui.QWidget):
         self.operateChinese2Utf8Btn.connect(self.operateChinese2Utf8Btn, QtCore.SIGNAL('clicked()'), self.chinese2Utf8BtnClick)
         self.operateUrlEncodeBtn.connect(self.operateUrlEncodeBtn, QtCore.SIGNAL('clicked()'), self.urlEncodeBtnClick)
         self.operateUrlDecodeBtn.connect(self.operateUrlDecodeBtn, QtCore.SIGNAL('clicked()'), self.urlDecodeBtnClick)
-        operateHBox.addWidget(self.operateAscii2UnicodeBtn)
-        operateHBox.addWidget(self.operateUnicode2AsciiBtn)
-        operateHBox.addWidget(self.operateUnicode2ChineseBtn)
-        operateHBox.addWidget(self.operateChinese2UnicodeBtn)
-        operateHBox.addWidget(self.operateUtf82ChineseBtn)
-        operateHBox.addWidget(self.operateChinese2Utf8Btn)
-        operateHBox.addWidget(self.operateUrlEncodeBtn)
-        operateHBox.addWidget(self.operateUrlDecodeBtn)
+        self.operateWin2UnixPathBtn.connect(self.operateWin2UnixPathBtn, QtCore.SIGNAL('clicked()'), self.win2UnixPathBtnClick)
+        self.operateUnix2WinPathBtn.connect(self.operateUnix2WinPathBtn, QtCore.SIGNAL('clicked()'), self.unix2WinPathBtnClick)
+        operateHBoxOne.addWidget(self.operateAscii2UnicodeBtn)
+        operateHBoxOne.addWidget(self.operateUnicode2AsciiBtn)
+        operateHBoxOne.addWidget(self.operateUnicode2ChineseBtn)
+        operateHBoxOne.addWidget(self.operateChinese2UnicodeBtn)
+        operateHBoxOne.addWidget(self.operateUtf82ChineseBtn)
+        operateHBoxOne.addWidget(self.operateChinese2Utf8Btn)
+        operateHBoxOne.addWidget(self.operateUrlEncodeBtn)
+        operateHBoxOne.addWidget(self.operateUrlDecodeBtn)
+        operateHBoxSecond.addWidget(self.operateWin2UnixPathBtn)
+        operateHBoxSecond.addWidget(self.operateUnix2WinPathBtn)
+        operateHBoxSecond.addStretch(1)
+        operateVBox.addLayout(operateHBoxOne)
+        operateVBox.addLayout(operateHBoxSecond)
 
         clearEditAction = QtGui.QAction(_fromUtf8("清空数据"), mainLayout)
         clearEditAction.connect(clearEditAction, QtCore.SIGNAL('triggered()'), self.clearEdit)
@@ -71,7 +82,7 @@ class StrTransformWidget(QtGui.QWidget):
         self.addAction(clearEditAction)
 
         srcStrGroupBox.setLayout(srcStrHBox)
-        operateGropBox.setLayout(operateHBox)
+        operateGropBox.setLayout(operateVBox)
         destStrGropBox.setLayout(destStrHBox)
 
         mainLayout.addWidget(srcStrGroupBox, 1)
@@ -131,3 +142,16 @@ class StrTransformWidget(QtGui.QWidget):
 
     def genZeroStr(self, len):
         return '0'*len
+
+    # 路径转换 windows 下反斜杠 \， 替换为linux 下斜杠 /
+    def win2UnixPathBtnClick(self):
+        srcStr = unicode(self.srcStrEdit.toPlainText())
+        if not srcStr:
+            return
+        self.destStrEdit.setText(srcStr.replace("\\", "/"))
+
+    def unix2WinPathBtnClick(self):
+        srcStr = unicode(self.srcStrEdit.toPlainText())
+        if not srcStr:
+            return
+        self.destStrEdit.setText(srcStr.replace("/", "\\"))

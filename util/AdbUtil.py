@@ -163,14 +163,14 @@ class AdbUtil:
         FileUtil.mkdirNotExist(destPath)
         recordPidCmd = str('%s -s %s shell ps | %s screenrecord' % (adbCmd, self.getCurrentSerialNo(), findCmd))
         recordPidResult = self._runSysCmd.run(recordPidCmd, should_process=False).stdout.read()
-        print 'recordRe: ', recordPidResult
+        # print 'recordRe: ', recordPidResult
         if 'not found' in recordPidResult:
             if callBack:
                 callBack(_fromUtf8("未获取到设备, 请检查USB连接~"))
             return recordPidResult
         reRecordPidStr = r'[0-9]+'
         recordPid = re.findall(reRecordPidStr, recordPidResult)[0]
-        print 'recordPid: ', recordPid
+        # print 'recordPid: ', recordPid
         killScreenRecordCmd = str('%s -s %s shell kill -2 %s' % (adbCmd, self.getCurrentSerialNo(), recordPid))
         self._runSysCmd.run(killScreenRecordCmd, should_process=False).stdout.read()
         cmd = str('%s -s %s pull %s %s' % (adbCmd, self.getCurrentSerialNo(), recordPath, destPath))

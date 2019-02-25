@@ -132,6 +132,9 @@ class AdbUtil:
         if "file pulled" in result:
             # os.startfile('d:\\adbTools')
             self._runSysCmd.run(['explorer.exe', destPath])
+        if callBack:
+            strTmp = "已完成截屏, 保存地址为: %s" % (destPath + FileUtil.getFileName(screenPath))
+            callBack(_fromUtf8(strTmp))
         return result
 
     # 向设备录屏
@@ -175,6 +178,9 @@ class AdbUtil:
         if "file pulled" in result:
             # os.startfile('d:\\adbTools')
             self._runSysCmd.run(['explorer.exe', destPath])
+        if callBack:
+            strTmp = "已完成录屏, 保存地址为: %s" % (destPath + FileUtil.getFileName(self._lastScreenRecordPath))
+            callBack(_fromUtf8(strTmp))
         return result
 
 

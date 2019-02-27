@@ -26,6 +26,7 @@ from win import WinCommandEnCoding
 from view.BaseInfoView import BaseInfoView
 from view.StrTransformView import StrTransformView
 from view.AdbToolView import AdbToolView
+from view.OtherToolsView import OtherToolsView
 
 reload(sys)
 # print sys.getdefaultencoding()
@@ -59,10 +60,13 @@ class Ui_MainWidget(object):
         tools = self.menuBar.addMenu('&Tools')
         self.toolOpenCmdAction = QtGui.QAction(_fromUtf8('打开cmd终端'), mainWindow)
         self.toolOpenCmdAction.connect(self.toolOpenCmdAction, QtCore.SIGNAL('triggered()'), self.openCmdByThread)
-        tools.addAction(self.toolOpenCmdAction)
         self.toolAdbAction = QtGui.QAction(_fromUtf8('adb 工具'), mainWindow)
         self.toolAdbAction.connect(self.toolAdbAction, QtCore.SIGNAL('triggered()'), self.openAdbToolView)
+        self.toolOtherAction = QtGui.QAction(_fromUtf8('其他工具'), mainWindow)
+        self.toolOtherAction.connect(self.toolOtherAction, QtCore.SIGNAL('triggered()'), self.openOtherToolsView)
+        tools.addAction(self.toolOpenCmdAction)
         tools.addAction(self.toolAdbAction)
+        tools.addAction(self.toolOtherAction)
 
         # 布局开始
         self.mainLayout = QtGui.QVBoxLayout()
@@ -141,6 +145,12 @@ class Ui_MainWidget(object):
         adbToolView.setStatusTip(_fromUtf8("使用adb工具时，需要USB连接上设备"))
         self.containerWidget.addWidget(adbToolView)
         self.containerWidget.setCurrentWidget(adbToolView)
+
+    # 打开其他工具视图
+    def openOtherToolsView(self):
+        otherToolsView = OtherToolsView()
+        self.containerWidget.addWidget(otherToolsView)
+        self.containerWidget.setCurrentWidget(otherToolsView)
 
 
 class AndroidToolsMainWindow(QtGui.QMainWindow):

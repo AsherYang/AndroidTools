@@ -46,7 +46,7 @@ class KeepWinAlive:
 
             if x == self.oldx and y == self.oldy:
                 stay_seconds = (now_time - self.prev_time).seconds
-                if stay_seconds >= 6:
+                if stay_seconds >= 60:
                     self.prev_time = now_time
                     pag.click()
                     pag.moveTo(x + 10, y + 10, 0.1)

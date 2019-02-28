@@ -21,8 +21,6 @@ pag.FAILSAFE = False
 
 class KeepWinAlive:
     def __init__(self):
-        # 需要防止类创建多次。pywintypes.error: (1410, 'RegisterClass', 'Class already exists.')
-        self.wtsMonitor = WinWTSMonitor(self.wtsCallBack)
         self.oldx = 0
         self.oldy = 0
         self.prev_time = None
@@ -67,6 +65,8 @@ class KeepWinAlive:
             time.sleep(2)
 
     def startMonitorScreen(self):
+        # 需要防止类创建多次。pywintypes.error: (1410, 'RegisterClass', 'Class already exists.')
+        self.wtsMonitor = WinWTSMonitor(self.wtsCallBack)
         thread = threading.Thread(target=self.wtsMonitor)
         thread.setDaemon(True)
         thread.start()

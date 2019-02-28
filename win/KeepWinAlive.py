@@ -21,10 +21,13 @@ pag.FAILSAFE = False
 
 class KeepWinAlive:
     def __init__(self):
-        self.loginStatus = False
+        # 需要防止类创建多次。pywintypes.error: (1410, 'RegisterClass', 'Class already exists.')
+        self.wtsMonitor = WinWTSMonitor(self.wtsCallBack)
         self.oldx = 0
         self.oldy = 0
         self.prev_time = None
+        self.cancel_status = False
+        self.cancel_call_back = None
 
     def doKeepAlive(self):
         self.startMonitorScreen()
@@ -33,13 +36,12 @@ class KeepWinAlive:
         thread.start()
 
     def keepAlive(self):
-        print '1111111-- ', self.loginStatus
-        while not self.loginStatus:
-            # 锁屏状态下， 才执行保持屏幕常亮功能
+        while not self.cancel_status:
+            # 保持屏幕常亮功能
             # 获取鼠标坐标
             x, y = pag.position()
             # print 'x-> ' + str(x) + ' y -> ' + str(y)
-            print 'oldx-> ' + str(self.oldx) + ' oldy -> ' + str(self.oldy)
+            # print 'oldx-> ' + str(self.oldx) + ' oldy -> ' + str(self.oldy)
             now_time = DateUtil().getCurrentTime()
 
             if x == self.oldx and y == self.oldy:
@@ -65,22 +67,28 @@ class KeepWinAlive:
             time.sleep(2)
 
     def startMonitorScreen(self):
-        wtsMonitor = WinWTSMonitor(self.wtsCallBack)
-        # threadUtil = ThreadUtil(wtsMonitor.start)
-        # threadUtil.setDaemon(True)
-        # threadUtil.run()
-        thread = threading.Thread(target=wtsMonitor)
+        thread = threading.Thread(target=self.wtsMonitor)
         thread.setDaemon(True)
         thread.start()
 
     def wtsCallBack(self, event, sessionId):
         if event == WTS_SESSION_LOCK:
             print 'wtsCallBack-- WTS_SESSION_LOCK'
-            self.loginStatus = False
+            # 电脑锁屏后，也取消模拟点击，让电脑正常进入休眠。
+            self.setCancelStatus(True)
         elif event == WTS_SESSION_UNLOCK:
-            self.loginStatus = True
+            # self.loginStatus = True
             print 'wtsCallBack-- WTS_SESSION_UNLOCK----'
 
+    # 外部控制循环接口
+    def setCancelStatus(self, cancelStatus):
+        self.cancel_status = cancelStatus
+        self.doCallBackCancelStatus(cancelStatus=cancelStatus)
+
+    # 回调取消状态
+    def doCallBackCancelStatus(self, cancelStatus):
+        if self.cancel_call_back:
+            self.cancel_call_back(cancelStatus)
 
 if __name__ == '__main__':
     keepAlive = KeepWinAlive()

@@ -8,6 +8,9 @@ Date  : 2019/2/26
 Desc  : windows WTS Session监听
 
 https://blog.51cto.com/13723657/2108705
+
+需要防止类创建多次。pywintypes.error: (1410, 'RegisterClass', 'Class already exists.')
+https://stackoverrun.com/cn/q/9357072
 """
 
 import win32con

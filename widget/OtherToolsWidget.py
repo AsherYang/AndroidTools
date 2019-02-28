@@ -17,17 +17,22 @@ from win.KeepWinAlive import KeepWinAlive
 class OtherToolsWidget(QtGui.QWidget):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
+        self.keepAlive = KeepWinAlive()
+        self.keepAlive.cancel_call_back = self.keepWinCancelCallBack
         mainLayout = QtGui.QVBoxLayout()
         firstGroupBox = QtGui.QGroupBox(_fromUtf8("Windows"))
         firstHBox = QtGui.QHBoxLayout()
 
         lockScreenBtn = QtGui.QPushButton(_fromUtf8("电脑锁屏"))
-        lockScreenAndOnBtn = QtGui.QPushButton(_fromUtf8("锁屏常亮"))
+        self.keepScreenOnBtn = QtGui.QPushButton(_fromUtf8("电脑常亮"))
+        cancelScreeOnBtn = QtGui.QPushButton(_fromUtf8("取消常亮"))
         lockScreenBtn.connect(lockScreenBtn, QtCore.SIGNAL('clicked()'), self.lockScreenBtnClick)
-        lockScreenAndOnBtn.connect(lockScreenAndOnBtn, QtCore.SIGNAL('clicked()'), self.lockScreenAndOnBtnClick)
+        self.keepScreenOnBtn.connect(self.keepScreenOnBtn, QtCore.SIGNAL('clicked()'), self.keepScreenOnBtnClick)
+        cancelScreeOnBtn.connect(cancelScreeOnBtn, QtCore.SIGNAL('clicked()'), self.cancelScreenOnBtnClick)
 
         firstHBox.addWidget(lockScreenBtn)
-        firstHBox.addWidget(lockScreenAndOnBtn)
+        firstHBox.addWidget(self.keepScreenOnBtn)
+        firstHBox.addWidget(cancelScreeOnBtn)
         firstHBox.addStretch(1)
         firstGroupBox.setLayout(firstHBox)
 
@@ -40,8 +45,18 @@ class OtherToolsWidget(QtGui.QWidget):
         lockScreen = LockWinScreen()
         lockScreen.lock()
 
-    # 锁屏并保持屏幕常亮
-    def lockScreenAndOnBtnClick(self):
-        self.lockScreenBtnClick()
-        keepAlive = KeepWinAlive()
-        keepAlive.doKeepAlive()
+    # 保持屏幕常亮
+    def keepScreenOnBtnClick(self):
+        # self.lockScreenBtnClick()
+        self.keepAlive.doKeepAlive()
+        # 防止重复点击创造多个线程
+        # self.keepScreenOnBtn.setEnabled(False)
+        # 也可以通过设置 cancelStatus 来反向回调，控制按钮点击状态
+        self.keepAlive.setCancelStatus(False)
+
+    def cancelScreenOnBtnClick(self):
+        self.keepAlive.setCancelStatus(True)
+
+    def keepWinCancelCallBack(self, cancel_status):
+        self.keepScreenOnBtn.setEnabled(cancel_status)
+

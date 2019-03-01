@@ -21,6 +21,13 @@ class AdbToolView(QtGui.QWidget):
 
         adbToolWidget.connect(adbToolWidget, QtCore.SIGNAL('printLogSignal(QString)'), logWidget.appendLog)
 
-        mainLayout.addWidget(adbToolWidget)
-        mainLayout.addWidget(logWidget)
+        vSplitter = QtGui.QSplitter(QtCore.Qt.Vertical)
+        vSplitter.setStyleSheet("QSplitter::handle {background-color:rgb(195, 198, 204); margin-left:10px; margin-right:10px;}")
+        vSplitter.setHandleWidth(1)
+        vSplitter.addWidget(adbToolWidget)
+        vSplitter.addWidget(logWidget)
+        vSplitter.setStretchFactor(0, 6)
+        vSplitter.setStretchFactor(1, 4)
+
+        mainLayout.addWidget(vSplitter)
         self.setLayout(mainLayout)

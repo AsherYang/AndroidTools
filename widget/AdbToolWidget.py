@@ -24,8 +24,13 @@ class AdbToolWidget(QtGui.QWidget):
         mainLayout = QtGui.QVBoxLayout()
         devicesGroupBox = QtGui.QGroupBox(_fromUtf8("设备"))
         operateGroupBox = QtGui.QGroupBox(_fromUtf8("操作"))
+        operationAdbListGroupBox = QtGui.QGroupBox(_fromUtf8("指令"))
+        adbListGroupBox = QtGui.QGroupBox(_fromUtf8("常用指令集"))
+        firstHBox = QtGui.QHBoxLayout()
         devicesHBox = QtGui.QHBoxLayout()
+        addAdbListHBox = QtGui.QHBoxLayout()
         operateHBox = QtGui.QHBoxLayout()
+        adbListHBox = QtGui.QHBoxLayout()
 
         self.getDevicesBtn = QtGui.QPushButton(_fromUtf8("获取设备"))
         self.getDevicesBtn.connect(self.getDevicesBtn, QtCore.SIGNAL('clicked()'), self.getDevicesBtnClick)
@@ -43,21 +48,38 @@ class AdbToolWidget(QtGui.QWidget):
         operStartScreenRecordBtn.connect(operStartScreenRecordBtn, QtCore.SIGNAL('clicked()'), self.operStartScreenRecordBtnClick)
         operStopScreenRecordBtn.connect(operStopScreenRecordBtn, QtCore.SIGNAL('clicked()'), self.operStopScreenRecordBtnClick)
 
+        addAdbListBtn = QtGui.QPushButton(_fromUtf8("添加常用指令"))
+        deleteAdbListBtn = QtGui.QPushButton(_fromUtf8("删除常用指令"))
+        addAdbListBtn.connect(addAdbListBtn, QtCore.SIGNAL('clicked()'), self.addAdbListBtnClick)
+        deleteAdbListBtn.connect(deleteAdbListBtn, QtCore.SIGNAL('clicked()'), self.deleteAdbListBtnClick)
+
+        # 显示常用指令集
+        adbListEdit = QtGui.QTextEdit()
+
         devicesHBox.addWidget(self.getDevicesBtn)
-        devicesHBox.addWidget(self.devicesListComboBox, 1)
-        devicesHBox.addStretch(2)
+        devicesHBox.addWidget(self.devicesListComboBox)
 
         operateHBox.addWidget(operListPackagesBtn)
         operateHBox.addWidget(operScreenCapBtn)
         operateHBox.addWidget(operStartScreenRecordBtn)
         operateHBox.addWidget(operStopScreenRecordBtn)
 
-        devicesGroupBox.setLayout(devicesHBox)
-        operateGroupBox.setLayout(operateHBox)
+        addAdbListHBox.addWidget(addAdbListBtn)
+        addAdbListHBox.addWidget(deleteAdbListBtn)
 
-        mainLayout.addWidget(devicesGroupBox)
+        adbListHBox.addWidget(adbListEdit)
+
+        devicesGroupBox.setLayout(devicesHBox)
+        operationAdbListGroupBox.setLayout(addAdbListHBox)
+        operateGroupBox.setLayout(operateHBox)
+        adbListGroupBox.setLayout(adbListHBox)
+
+        firstHBox.addWidget(devicesGroupBox)
+        firstHBox.addWidget(operationAdbListGroupBox)
+
+        mainLayout.addLayout(firstHBox)
         mainLayout.addWidget(operateGroupBox)
-        mainLayout.addStretch(1)
+        mainLayout.addWidget(adbListGroupBox)
 
         self.setLayout(mainLayout)
 
@@ -66,6 +88,15 @@ class AdbToolWidget(QtGui.QWidget):
         thread = threading.Thread(target=self.getDeviceList)
         thread.setDaemon(True)
         thread.start()
+
+    # 添加常用指令
+    def addAdbListBtnClick(self):
+        self.printLog(_fromUtf8("添加指令"))
+        pass
+
+    # 删除常用指令
+    def deleteAdbListBtnClick(self):
+        self.printLog(_fromUtf8("删除指令"))
 
     # 获取设备上的APP包列表
     def operListPackageBtnClick(self):

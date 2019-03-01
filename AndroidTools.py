@@ -23,6 +23,7 @@ from util.EncodeUtil import _translate, _fromUtf8, _translateUtf8
 
 from util.RunSysCommand import RunSysCommand
 from win import WinCommandEnCoding
+from win.WinWTSMonitor import WinWTSMonitor
 from view.BaseInfoView import BaseInfoView
 from view.StrTransformView import StrTransformView
 from view.AdbToolView import AdbToolView
@@ -39,6 +40,7 @@ class Ui_MainWidget(object):
         self.mainWindow = mainWindow
         # 解决多终端问题 http://www.oschina.net/code/snippet_54100_629
         self.localServer = localServer
+        self.wtsMonitor = WinWTSMonitor()
         mainWindow.setObjectName(_fromUtf8("MainWindow"))
         self.centralwidget = QtGui.QWidget(mainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
@@ -149,6 +151,7 @@ class Ui_MainWidget(object):
     # 打开其他工具视图
     def openOtherToolsView(self):
         otherToolsView = OtherToolsView()
+        otherToolsView.setWinWTSMonitor(self.wtsMonitor)
         self.containerWidget.addWidget(otherToolsView)
         self.containerWidget.setCurrentWidget(otherToolsView)
 

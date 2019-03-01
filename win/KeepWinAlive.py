@@ -26,6 +26,7 @@ class KeepWinAlive:
         self.prev_time = None
         self.cancel_status = False
         self.cancel_call_back = None
+        self.wtsMonitor = None
 
     def doKeepAlive(self):
         self.startMonitorScreen()
@@ -34,6 +35,7 @@ class KeepWinAlive:
         thread.start()
 
     def keepAlive(self):
+        print '---self.cancel_status: ', self.cancel_status
         while not self.cancel_status:
             # 保持屏幕常亮功能
             # 获取鼠标坐标
@@ -64,12 +66,16 @@ class KeepWinAlive:
             print pos_str
             time.sleep(2)
 
-    def startMonitorScreen(self):
+    def setWinWTSMonitor(self, wtsMonitor):
         # 需要防止类创建多次。pywintypes.error: (1410, 'RegisterClass', 'Class already exists.')
-        self.wtsMonitor = WinWTSMonitor(self.wtsCallBack)
-        thread = threading.Thread(target=self.wtsMonitor)
-        thread.setDaemon(True)
-        thread.start()
+        self.wtsMonitor = wtsMonitor
+        self.wtsMonitor.setCallBack(self.wtsCallBack)
+
+    def startMonitorScreen(self):
+        if self.wtsMonitor:
+            thread = threading.Thread(target=self.wtsMonitor)
+            thread.setDaemon(True)
+            thread.start()
 
     def wtsCallBack(self, event, sessionId):
         if event == WTS_SESSION_LOCK:

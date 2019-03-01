@@ -15,7 +15,10 @@ class OtherToolsView(QtGui.QWidget):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
         mainLayout = QtGui.QVBoxLayout()
-        otherToolsWidget = OtherToolsWidget()
+        self.otherToolsWidget = OtherToolsWidget()
 
-        mainLayout.addWidget(otherToolsWidget)
+        mainLayout.addWidget(self.otherToolsWidget)
         self.setLayout(mainLayout)
+
+    def setWinWTSMonitor(self, wtsMonitor):
+        self.otherToolsWidget.setWinWTSMonitor(wtsMonitor)

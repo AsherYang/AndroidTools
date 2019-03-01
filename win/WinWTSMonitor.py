@@ -39,6 +39,9 @@ class WinWTSMonitor:
         win32gui.UpdateWindow(self.hWnd)
         win32ts.WTSRegisterSessionNotification(self.hWnd, win32ts.NOTIFY_FOR_ALL_SESSIONS)
 
+    def setCallBack(self, callBack):
+        self.callBack = callBack
+
     def start(self):
         win32gui.PumpMessages()
 

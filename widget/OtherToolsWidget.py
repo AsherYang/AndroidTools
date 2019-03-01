@@ -60,3 +60,7 @@ class OtherToolsWidget(QtGui.QWidget):
     def keepWinCancelCallBack(self, cancel_status):
         self.keepScreenOnBtn.setEnabled(cancel_status)
 
+    # 防止多次创建 wtsMonitor
+    def setWinWTSMonitor(self, wtsMonitor):
+        self.keepAlive.setWinWTSMonitor(wtsMonitor)
+

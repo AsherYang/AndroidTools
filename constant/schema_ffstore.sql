@@ -1,0 +1,21 @@
+SET SESSION default_storage_engine = "InnoDB";
+SET SESSION time_zone = "+8:00";
+ALTER DATABASE CHARACTER SET "utf8";
+
+-- adb 命令表
+DROP TABLE IF EXISTS adb_cmds;
+CREATE TABLE adb_cmds (
+    _id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    adb_cmd_name VARCHAR(20),
+    adb_cmd VARCHAR(50),
+    adb_cmd_desc VARCHAR(50)
+);
+
+-- 定时任务表
+--DROP TABLE IF EXISTS scheduler_jobs;
+--CREATE TABLE scheduler_jobs (
+--    _id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+--    job_name VARCHAR(20),
+--    job_trigger VARCHAR(50),
+--    login_time VARCHAR(30)
+--);

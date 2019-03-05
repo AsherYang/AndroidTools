@@ -1,6 +1,6 @@
 SET SESSION default_storage_engine = "InnoDB";
 SET SESSION time_zone = "+8:00";
-ALTER DATABASE CHARACTER SET "utf8";
+ALTER DATABASE CHARACTER SET "utf8mb4";
 
 -- adb 命令表
 DROP TABLE IF EXISTS adb_cmds;

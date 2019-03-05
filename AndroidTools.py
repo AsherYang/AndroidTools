@@ -11,7 +11,10 @@ Desc  : Android Tools 为一款工作中使用到的android功能工具集
 """
 
 import sys
+import os
 import threading
+import subprocess
+import MySQLdb
 
 from PyQt4 import QtCore, QtGui
 
@@ -20,6 +23,8 @@ from PyQt4.QtNetwork import QLocalServer, QLocalSocket
 from constant import AppConstants
 from util import SupportFiles
 from util.EncodeUtil import _translate, _fromUtf8, _translateUtf8
+from util import DbUtil
+from constant import DbConstant
 
 from util.RunSysCommand import RunSysCommand
 from win import WinCommandEnCoding
@@ -225,6 +230,8 @@ def main():
     localServer = QLocalServer()
     # 一直监听端口
     localServer.listen(serverName)
+    # create db
+    createDb()
     try:
         uiMainWidget.setupUi(androidToolsMainWin, localServer, winOsArgv)
         androidToolsMainWin.show()
@@ -232,6 +239,28 @@ def main():
     finally:
         localServer.close()
 
+# 需要先手动在数据库里，建立好数据仓库，才能创建表
+# create DATABASE android_tools
+def createDb():
+    db = DbUtil.getDb()
+    cursor = DbUtil.getConn(db)
+    if cursor is None:
+        db.close()
+        return
+    try:
+        cursor.execute('select count(*) from adb_cmds')
+        cursor.fetchall()
+    except MySQLdb.ProgrammingError:
+        subprocess.check_call([
+            'mysql',
+            '--host=' + DbConstant.dbHost,
+            '--database=' + DbConstant.dbName,
+            '--user=' + DbConstant.dbUser,
+            '--password=' + DbConstant.dbPwd,
+        ], stdin=open(os.path.join(os.path.dirname(__file__), 'constant', 'schema_androidtools.sql')))
+    finally:
+        cursor.close()
+        db.close()
 
 if __name__ == '__main__':
     main()

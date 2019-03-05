@@ -25,9 +25,9 @@ def getConn(db):
     if db is None:
         return None
     cursor = db.cursor(cursorclass=MySQLdb.cursors.DictCursor)
-    cursor.execute('SET NAMES utf8;')
-    cursor.execute('SET CHARACTER SET utf8;')
-    cursor.execute('SET character_set_connection=utf8;')
+    cursor.execute('SET NAMES utf8mb4;')
+    cursor.execute('SET CHARACTER SET utf8mb4;')
+    cursor.execute('SET character_set_connection=utf8mb4;')
     return cursor
 
 

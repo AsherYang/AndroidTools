@@ -14,12 +14,14 @@ from PyQt4 import QtCore, QtGui
 
 from util.AdbUtil import AdbUtil
 from util.EncodeUtil import _fromUtf8
+from view.AdbOperateWin import AdbOperateWin
 
 
 class AdbToolWidget(QtGui.QWidget):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
         self.adbUtil = AdbUtil()
+        self.operAdbWin = AdbOperateWin()
         self.deviceList = []
         mainLayout = QtGui.QVBoxLayout()
         devicesGroupBox = QtGui.QGroupBox(_fromUtf8("设备"))
@@ -92,11 +94,13 @@ class AdbToolWidget(QtGui.QWidget):
     # 添加常用指令
     def addAdbListBtnClick(self):
         self.printLog(_fromUtf8("添加指令"))
+        self.operAdbWin.show()
         pass
 
     # 删除常用指令
     def deleteAdbListBtnClick(self):
         self.printLog(_fromUtf8("删除指令"))
+        self.operAdbWin.show()
 
     # 获取设备上的APP包列表
     def operListPackageBtnClick(self):

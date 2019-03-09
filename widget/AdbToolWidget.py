@@ -50,10 +50,8 @@ class AdbToolWidget(QtGui.QWidget):
         operStartScreenRecordBtn.connect(operStartScreenRecordBtn, QtCore.SIGNAL('clicked()'), self.operStartScreenRecordBtnClick)
         operStopScreenRecordBtn.connect(operStopScreenRecordBtn, QtCore.SIGNAL('clicked()'), self.operStopScreenRecordBtnClick)
 
-        addAdbListBtn = QtGui.QPushButton(_fromUtf8("添加常用指令"))
-        deleteAdbListBtn = QtGui.QPushButton(_fromUtf8("删除常用指令"))
-        addAdbListBtn.connect(addAdbListBtn, QtCore.SIGNAL('clicked()'), self.addAdbListBtnClick)
-        deleteAdbListBtn.connect(deleteAdbListBtn, QtCore.SIGNAL('clicked()'), self.deleteAdbListBtnClick)
+        operateAdbListBtn = QtGui.QPushButton(_fromUtf8("增删常用指令"))
+        operateAdbListBtn.connect(operateAdbListBtn, QtCore.SIGNAL('clicked()'), self.operateAdbListBtnClick)
 
         # 显示常用指令集
         adbListEdit = QtGui.QTextEdit()
@@ -66,8 +64,8 @@ class AdbToolWidget(QtGui.QWidget):
         operateHBox.addWidget(operStartScreenRecordBtn)
         operateHBox.addWidget(operStopScreenRecordBtn)
 
-        addAdbListHBox.addWidget(addAdbListBtn)
-        addAdbListHBox.addWidget(deleteAdbListBtn)
+        addAdbListHBox.addWidget(operateAdbListBtn, 1)
+        addAdbListHBox.addStretch(1)
 
         adbListHBox.addWidget(adbListEdit)
 
@@ -76,8 +74,8 @@ class AdbToolWidget(QtGui.QWidget):
         operateGroupBox.setLayout(operateHBox)
         adbListGroupBox.setLayout(adbListHBox)
 
-        firstHBox.addWidget(devicesGroupBox)
-        firstHBox.addWidget(operationAdbListGroupBox)
+        firstHBox.addWidget(devicesGroupBox, 1)
+        firstHBox.addWidget(operationAdbListGroupBox, 1)
 
         mainLayout.addLayout(firstHBox)
         mainLayout.addWidget(operateGroupBox)
@@ -91,15 +89,9 @@ class AdbToolWidget(QtGui.QWidget):
         thread.setDaemon(True)
         thread.start()
 
-    # 添加常用指令
-    def addAdbListBtnClick(self):
-        self.printLog(_fromUtf8("添加指令"))
-        self.operAdbWin.show()
-        pass
-
-    # 删除常用指令
-    def deleteAdbListBtnClick(self):
-        self.printLog(_fromUtf8("删除指令"))
+    # 操作常用指令(添加和删除)
+    def operateAdbListBtnClick(self):
+        self.operAdbWin.setTips(_fromUtf8("添加指令时,名称|描述(选填), 命令(必填)；删除指令时,填入命令即可。"))
         self.operAdbWin.show()
 
     # 获取设备上的APP包列表

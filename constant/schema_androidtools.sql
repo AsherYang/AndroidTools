@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS adb_cmds;
 CREATE TABLE adb_cmds (
     _id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     adb_cmd_name VARCHAR(20),
-    adb_cmd VARCHAR(50),
+    adb_cmd VARCHAR(50) NOT NULL UNIQUE,
     adb_cmd_desc VARCHAR(50)
 );
 

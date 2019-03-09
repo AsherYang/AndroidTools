@@ -15,6 +15,7 @@ from PyQt4 import QtCore, QtGui
 from util.AdbUtil import AdbUtil
 from util.EncodeUtil import _fromUtf8
 from view.AdbOperateWin import AdbOperateWin
+from db.AdbDao import AdbDao
 
 
 class AdbToolWidget(QtGui.QWidget):
@@ -23,6 +24,7 @@ class AdbToolWidget(QtGui.QWidget):
         self.adbUtil = AdbUtil()
         self.operAdbWin = AdbOperateWin()
         self.deviceList = []
+        self.adbCmdList = []
         mainLayout = QtGui.QVBoxLayout()
         devicesGroupBox = QtGui.QGroupBox(_fromUtf8("设备"))
         operateGroupBox = QtGui.QGroupBox(_fromUtf8("操作"))
@@ -30,7 +32,7 @@ class AdbToolWidget(QtGui.QWidget):
         adbListGroupBox = QtGui.QGroupBox(_fromUtf8("常用指令集"))
         firstHBox = QtGui.QHBoxLayout()
         devicesHBox = QtGui.QHBoxLayout()
-        addAdbListHBox = QtGui.QHBoxLayout()
+        operationAdbListHBox = QtGui.QHBoxLayout()
         operateHBox = QtGui.QHBoxLayout()
         adbListHBox = QtGui.QHBoxLayout()
 
@@ -50,11 +52,14 @@ class AdbToolWidget(QtGui.QWidget):
         operStartScreenRecordBtn.connect(operStartScreenRecordBtn, QtCore.SIGNAL('clicked()'), self.operStartScreenRecordBtnClick)
         operStopScreenRecordBtn.connect(operStopScreenRecordBtn, QtCore.SIGNAL('clicked()'), self.operStopScreenRecordBtnClick)
 
-        operateAdbListBtn = QtGui.QPushButton(_fromUtf8("增删常用指令"))
-        operateAdbListBtn.connect(operateAdbListBtn, QtCore.SIGNAL('clicked()'), self.operateAdbListBtnClick)
+        addDeleteAdbListBtn = QtGui.QPushButton(_fromUtf8("增删"))
+        addDeleteAdbListBtn.connect(addDeleteAdbListBtn, QtCore.SIGNAL('clicked()'), self.addDeleteAdbListBtnClick)
+        queryAdbListBtn = QtGui.QPushButton(_fromUtf8("查询"))
+        queryAdbListBtn.connect(queryAdbListBtn, QtCore.SIGNAL('clicked()'), self.queryAdbListBtnClick)
+        self.operAdbWin.connect(self.operAdbWin, QtCore.SIGNAL('operateCmdSignal(QString, int)'), self.hasOperAdbListSlot)
 
         # 显示常用指令集
-        adbListEdit = QtGui.QTextEdit()
+        self.adbListEdit = QtGui.QTextEdit()
 
         devicesHBox.addWidget(self.getDevicesBtn)
         devicesHBox.addWidget(self.devicesListComboBox)
@@ -64,13 +69,13 @@ class AdbToolWidget(QtGui.QWidget):
         operateHBox.addWidget(operStartScreenRecordBtn)
         operateHBox.addWidget(operStopScreenRecordBtn)
 
-        addAdbListHBox.addWidget(operateAdbListBtn, 1)
-        addAdbListHBox.addStretch(1)
+        operationAdbListHBox.addWidget(addDeleteAdbListBtn, 1)
+        operationAdbListHBox.addWidget(queryAdbListBtn, 1)
 
-        adbListHBox.addWidget(adbListEdit)
+        adbListHBox.addWidget(self.adbListEdit)
 
         devicesGroupBox.setLayout(devicesHBox)
-        operationAdbListGroupBox.setLayout(addAdbListHBox)
+        operationAdbListGroupBox.setLayout(operationAdbListHBox)
         operateGroupBox.setLayout(operateHBox)
         adbListGroupBox.setLayout(adbListHBox)
 
@@ -90,9 +95,31 @@ class AdbToolWidget(QtGui.QWidget):
         thread.start()
 
     # 操作常用指令(添加和删除)
-    def operateAdbListBtnClick(self):
+    def addDeleteAdbListBtnClick(self):
         self.operAdbWin.setTips(_fromUtf8("添加指令时,名称|描述(选填), 命令(必填)；删除指令时,填入命令即可。"))
         self.operAdbWin.show()
+
+    # 查询所有保存的常用adb 指令集
+    def queryAdbListBtnClick(self):
+        adbDao = AdbDao()
+        adbBeanList = adbDao.queryAll()
+        if not adbBeanList:
+            self.printLog(_fromUtf8("请先添加常用的ADB指令~"))
+            return
+        self.adbCmdList[:] = []
+        for adbBean in adbBeanList:
+            self.adbCmdList.append(unicode(adbBean.adb_cmd))
+        self.adbListEdit.setText("\n".join(self.adbCmdList))
+
+    # 槽函数，响应 AdbOperateWin 中的操作
+    def hasOperAdbListSlot(self, cmd, operate):
+        if not cmd:
+            return
+        if operate == AdbOperateWin.operateAdd:
+            self.adbCmdList.append(unicode(cmd))
+        elif operate == AdbOperateWin.operateDelete:
+            self.adbCmdList.remove(cmd)
+        self.adbListEdit.setText("\n".join(self.adbCmdList))
 
     # 获取设备上的APP包列表
     def operListPackageBtnClick(self):

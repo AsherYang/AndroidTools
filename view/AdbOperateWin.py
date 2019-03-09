@@ -28,6 +28,9 @@ sys.setdefaultencoding('utf8')
 
 class AdbOperateWin(QtGui.QMainWindow):
 
+    operateAdd = 1
+    operateDelete = 2
+
     def __init__(self, parent=None):
         QtGui.QMainWindow.__init__(self, parent)
         self.setWindowTitle(u'adb指令')
@@ -82,7 +85,7 @@ class AdbOperateWin(QtGui.QMainWindow):
         adbCmdName = str(self.adbCmdNameEdit.text()).decode('utf8')
         adbCmd = str(self.adbCmdEdit.text()).decode('utf8')
         adbCmdDesc = str(self.adbCmdDescEdit.text()).decode('utf8')
-        print 'adbCmdName:%s , adbCmd:%s , adbCmdDesc: %s ' % (adbCmdName, adbCmd, adbCmdDesc)
+        # print 'adbCmdName:%s , adbCmd:%s , adbCmdDesc: %s ' % (adbCmdName, adbCmd, adbCmdDesc)
         if not adbCmd:
             self.setTips(_fromUtf8("adb命令不能为空!"))
             return
@@ -93,6 +96,7 @@ class AdbOperateWin(QtGui.QMainWindow):
         result = self.adbDao.save(adbBean)
         if result:
             self.setTips(_fromUtf8("adb命令添加加成功~"))
+            self.emitOperateCmd(adbBean.adb_cmd, AdbOperateWin.operateAdd)
         else:
             self.setTips(_fromUtf8("adb命令添加失败, 请检查!"))
 
@@ -100,15 +104,22 @@ class AdbOperateWin(QtGui.QMainWindow):
         adbCmdName = str(self.adbCmdNameEdit.text()).decode('utf8')
         adbCmd = str(self.adbCmdEdit.text()).decode('utf8')
         adbCmdDesc = str(self.adbCmdDescEdit.text()).decode('utf8')
-        print 'adbCmdName:%s , adbCmd:%s , adbCmdDesc: %s ' % (adbCmdName, adbCmd, adbCmdDesc)
+        # print 'adbCmdName:%s , adbCmd:%s , adbCmdDesc: %s ' % (adbCmdName, adbCmd, adbCmdDesc)
         if not adbCmd:
             self.setTips(_fromUtf8("adb命令不能为空!"))
             return
         result = self.adbDao.delete(adbCmd)
         if result:
             self.setTips(_fromUtf8("adb命令已删除"))
+            self.emitOperateCmd(adbCmd, AdbOperateWin.operateDelete)
         else:
             self.setTips(_fromUtf8("adb命令删除失败, 请检查!"))
+
+    def emitOperateCmd(self, cmd, operation):
+        self.emit(QtCore.SIGNAL('operateCmdSignal(QString, int)'), cmd, operation)
+
+    def operateCmdSignal(self, cmd, operation):
+        pass
 
 
 if __name__ == '__main__':

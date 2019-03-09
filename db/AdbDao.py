@@ -16,6 +16,7 @@ class AdbDao:
     def __init__(self):
         pass
 
+    # 添加一条adb 指令
     def save(self, adbBean):
         if not adbBean or not isinstance(adbBean, AdbBean):
             return
@@ -24,8 +25,27 @@ class AdbDao:
                  % (adbBean.adb_cmd_name, adbBean.adb_cmd, adbBean.adb_cmd_desc)
         return DbUtil.insert(insert)
 
+    # 删除一条adb 指令
     def delete(self, cmd):
         if not cmd:
             return
         delete = 'delete from adb_cmds where adb_cmd = "%s" ' % cmd
         return DbUtil.delete(delete)
+
+    # 查询所有添加的adb 指令
+    def queryAll(self):
+        query = 'SELECT * FROM adb_cmds;'
+        resultList = DbUtil.query(query)
+        # print resultList
+        if not resultList:
+            return None
+        adbBeanList = []
+        for row in resultList:
+            # print row
+            adbBean = AdbBean()
+            row_id = row["_id"]
+            adbBean.adb_cmd_name = row["adb_cmd_name"]
+            adbBean.adb_cmd = row["adb_cmd"]
+            adbBean.adb_cmd_desc = row["adb_cmd_desc"]
+            adbBeanList.append(adbBean)
+        return adbBeanList

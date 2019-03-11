@@ -33,6 +33,7 @@ from view.BaseInfoView import BaseInfoView
 from view.StrTransformView import StrTransformView
 from view.AdbToolView import AdbToolView
 from view.OtherToolsView import OtherToolsView
+from view.TrayIcon import TrayIcon
 
 reload(sys)
 # print sys.getdefaultencoding()
@@ -95,6 +96,9 @@ class Ui_MainWidget(object):
                 pass
         # 监听新到来的连接(新的终端被打开)
         self.localServer.connect(localServer, QtCore.SIGNAL('newConnection()'), self.newLocalSocketConnection)
+
+        self.trayIcon = TrayIcon()
+        self.trayIcon.showMsg("have a nice day!")
 
         mainWindow.setMenuBar(self.menuBar)
         mainWindow.setStatusBar(self.statusBar)

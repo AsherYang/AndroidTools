@@ -24,7 +24,7 @@ class TrayIcon(QSystemTrayIcon):
         # 设置关闭所有窗口,也不关闭应用程序
         # QtGui.QApplication.instance().setQuitOnLastWindowClosed(False)
         # 设置系统托盘图标
-        self.setIcon(QIcon(resource_path('img/log.png')))
+        self.setIcon(QIcon(resource_path('img/android_tools_logo.png')))
         # 托盘能否被点击
         self.clickEnable = clickEnable
         # 托盘被点击
@@ -43,7 +43,9 @@ class TrayIcon(QSystemTrayIcon):
         # http://doc.qt.io/qt-5/qsystemtrayicon.html  (ActivationReason)
         if reason == QSystemTrayIcon.DoubleClick or reason == QSystemTrayIcon.Trigger:
             pw = self.parent()
-            if pw.isVisible():
+            if not pw:
+                pass
+            elif pw.isVisible():
                 pw.hide()
             else:
                 pw.show()

@@ -24,6 +24,7 @@ from constant import AppConstants
 from util import SupportFiles
 from util.EncodeUtil import _translate, _fromUtf8, _translateUtf8
 from util import DbUtil
+from util import QSettingsUtil
 from constant import DbConstant
 
 from util.RunSysCommand import RunSysCommand
@@ -33,6 +34,7 @@ from view.BaseInfoView import BaseInfoView
 from view.StrTransformView import StrTransformView
 from view.AdbToolView import AdbToolView
 from view.OtherToolsView import OtherToolsView
+from view.SettingsView import SettingsView
 from view.TrayIcon import TrayIcon
 
 reload(sys)
@@ -75,6 +77,12 @@ class Ui_MainWidget(object):
         tools.addAction(self.toolOpenCmdAction)
         tools.addAction(self.toolAdbAction)
         tools.addAction(self.toolOtherAction)
+
+        # Settings
+        settings = self.menuBar.addMenu('&Setting')
+        self.settingAction = QtGui.QAction(_fromUtf8("&设置"), mainWindow)
+        self.settingAction.connect(self.settingAction, QtCore.SIGNAL('triggered()'), self.openSettingView)
+        settings.addAction(self.settingAction)
 
         # 布局开始
         self.mainLayout = QtGui.QVBoxLayout()
@@ -164,6 +172,12 @@ class Ui_MainWidget(object):
         self.containerWidget.addWidget(otherToolsView)
         self.containerWidget.setCurrentWidget(otherToolsView)
 
+    # 打开设置视图
+    def openSettingView(self):
+        settingsView = SettingsView()
+        self.containerWidget.addWidget(settingsView)
+        self.containerWidget.setCurrentWidget(settingsView)
+
 
 class AndroidToolsMainWindow(QtGui.QMainWindow):
     def __init__(self, parent=None):
@@ -215,6 +229,7 @@ def main():
     serverName = 'AndroidToolsServer'
     clientSocket = QLocalSocket()
     clientSocket.connectToServer(serverName)
+    QSettingsUtil.init()
     # 如果连接成功， 表明server 已经存在，当前已经有实例在运行, 将参数发送给服务端
     if clientSocket.waitForConnected(500):
         # print u'连接成功 arg = ', winOsArgv

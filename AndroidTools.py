@@ -10,36 +10,36 @@ Desc  : Android Tools 为一款工作中使用到的android功能工具集
 为了方便日常android工作，所开发的桌面版工具。
 """
 
-import sys
 import os
-import threading
 import subprocess
+import sys
+import threading
+
 import MySQLdb
-
 from PyQt4 import QtCore, QtGui
-
 from PyQt4.QtNetwork import QLocalServer, QLocalSocket
 
 from constant import AppConstants
-from util import SupportFiles
-from util.EncodeUtil import _translate, _fromUtf8, _translateUtf8
+from constant import DbConstant
 from util import DbUtil
 from util import QSettingsUtil
-from constant import DbConstant
-
+from util import SupportFiles
+from util.EncodeUtil import _translate, _fromUtf8
 from util.RunSysCommand import RunSysCommand
-from win import WinCommandEnCoding
-from win.WinWTSMonitor import WinWTSMonitor
-from view.BaseInfoView import BaseInfoView
-from view.StrTransformView import StrTransformView
 from view.AdbToolView import AdbToolView
+from view.BaseInfoView import BaseInfoView
 from view.OtherToolsView import OtherToolsView
 from view.SettingsView import SettingsView
+from view.StrTransformView import StrTransformView
 from view.TrayIcon import TrayIcon
+from win import WinCommandEnCoding
+from win.WinWTSMonitor import WinWTSMonitor
 
 reload(sys)
 # print sys.getdefaultencoding()
 sys.setdefaultencoding('utf8')
+
+
 # print sys.getdefaultencoding()
 
 
@@ -62,7 +62,8 @@ class Ui_MainWidget(object):
         self.viewBaseInfoAction = QtGui.QAction(_fromUtf8("解析 apk"), mainWindow)
         self.viewBaseInfoAction.connect(self.viewBaseInfoAction, QtCore.SIGNAL('triggered()'), self.openBaseInfoView)
         self.viewStrTransformAction = QtGui.QAction(_fromUtf8("&字符串转换"), mainWindow)
-        self.viewStrTransformAction.connect(self.viewStrTransformAction, QtCore.SIGNAL('triggered()'), self.openStrTransformView)
+        self.viewStrTransformAction.connect(self.viewStrTransformAction, QtCore.SIGNAL('triggered()'),
+                                            self.openStrTransformView)
         views.addAction(self.viewBaseInfoAction)
         views.addAction(self.viewStrTransformAction)
 
@@ -258,6 +259,7 @@ def main():
     finally:
         localServer.close()
 
+
 # 需要先手动在数据库里，建立好数据仓库，才能创建表
 # create DATABASE android_tools
 def createDb():
@@ -280,6 +282,7 @@ def createDb():
     finally:
         cursor.close()
         db.close()
+
 
 if __name__ == '__main__':
     main()

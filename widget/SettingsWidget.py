@@ -12,11 +12,13 @@ from PyQt4 import QtCore, QtGui
 
 from util.EncodeUtil import _fromUtf8
 from util import QSettingsUtil
+from win.WinBootUp import WinBootUp
 
 
 class SettingsWidget(QtGui.QWidget):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
+        self.winBootUp = WinBootUp()
 
         mainLayout = QtGui.QVBoxLayout()
         commonGroupBox = QtGui.QGroupBox(_fromUtf8("&通用"))
@@ -39,12 +41,12 @@ class SettingsWidget(QtGui.QWidget):
     def setBootUp(self):
         if self.bootUpCB.isChecked():
             QSettingsUtil.setBootUp(QSettingsUtil.bootUpOn)
+            self.winBootUp.registerBootUp()
         else:
             QSettingsUtil.setBootUp(QSettingsUtil.bootUpOff)
 
     def setBootUpBySetting(self):
         bootUpStatus = QSettingsUtil.getBootUp()
-        print 'bootupStatus: ', bootUpStatus
         if bootUpStatus == QtCore.QString.number(QSettingsUtil.bootUpOn):
             self.bootUpCB.setChecked(True)
         else:

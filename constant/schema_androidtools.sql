@@ -11,6 +11,13 @@ CREATE TABLE adb_cmds (
     adb_cmd_desc VARCHAR(50)
 );
 
+DROP TABLE IF EXISTS tips_today;
+CREATE TABLE tips_today (
+    _id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    tips_type VARCHAR(5),
+    tips_desc VARCHAR(100)
+);
+
 -- 定时任务表
 --DROP TABLE IF EXISTS scheduler_jobs;
 --CREATE TABLE scheduler_jobs (

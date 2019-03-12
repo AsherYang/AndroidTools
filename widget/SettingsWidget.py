@@ -44,6 +44,7 @@ class SettingsWidget(QtGui.QWidget):
             self.winBootUp.registerBootUp()
         else:
             QSettingsUtil.setBootUp(QSettingsUtil.bootUpOff)
+            self.winBootUp.unRegisterBootUp()
 
     def setBootUpBySetting(self):
         bootUpStatus = QSettingsUtil.getBootUp()

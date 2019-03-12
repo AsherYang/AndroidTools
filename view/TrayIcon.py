@@ -58,11 +58,11 @@ class TrayIcon(QSystemTrayIcon):
         # self.showMessage("FFStore", "click msg", icon=1)
         pass
 
-    def showMsg(self, msg):
+    def showMsg(self, msg, title="AndroidTools"):
         # self.showMessage("提示", "你点了消息", self.icon)
         # http://doc.qt.io/qt-5/qsystemtrayicon.html (MessageIcon)
         self.show()
-        self.showMessage(u'AndroidTools', msg, icon=1)
+        self.showMessage(title, msg, icon=1)
 
     def showMenu(self):
         self.menu.show()

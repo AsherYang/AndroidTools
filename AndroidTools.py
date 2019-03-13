@@ -185,10 +185,10 @@ class AndroidToolsMainWindow(QtGui.QMainWindow):
         # self.setFixedSize(screen.width() / 8 * 3, screen.height() / 6 * 3)
         self.setWindowTitle(AppConstants.ApplicationName)
         # 设置顶级窗口
-        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        # self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         self.setAcceptDrops(True)
         self.tray = TrayIcon(parent=self)
-        self.tray.showMsg(msg=_fromUtf8("别人20, 你5, FACE?"), title=_fromUtf8("警告"))
+        self.tray.showMsg(msg=_fromUtf8("别人20, 你5..."), title=_fromUtf8("警告"))
         self.tray.connect(self.tray, QtCore.SIGNAL('showProgramSignal'), self.showProgram)
 
     def showProgram(self):

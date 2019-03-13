@@ -106,9 +106,6 @@ class Ui_MainWidget(object):
         # 监听新到来的连接(新的终端被打开)
         self.localServer.connect(localServer, QtCore.SIGNAL('newConnection()'), self.newLocalSocketConnection)
 
-        self.trayIcon = TrayIcon()
-        self.trayIcon.showMsg("have a nice day!")
-
         mainWindow.setMenuBar(self.menuBar)
         mainWindow.setStatusBar(self.statusBar)
         mainWindow.setCentralWidget(self.centralwidget)
@@ -187,7 +184,23 @@ class AndroidToolsMainWindow(QtGui.QMainWindow):
         self.resize(screen.width() / 8 * 3, screen.height() / 6 * 3)
         # self.setFixedSize(screen.width() / 8 * 3, screen.height() / 6 * 3)
         self.setWindowTitle(AppConstants.ApplicationName)
+        # 设置顶级窗口
+        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         self.setAcceptDrops(True)
+        self.tray = TrayIcon(parent=self)
+        self.tray.showMsg(msg=_fromUtf8("别人20, 你5, FACE?"), title=_fromUtf8("警告"))
+        self.tray.connect(self.tray, QtCore.SIGNAL('showProgramSignal'), self.showProgram)
+
+    def showProgram(self):
+        # print '---> isMaximized: %s, isMin: %s, isHide: %s, isVisible:%s , isActive: %s '\
+        #       % (self.isMaximized(), self.isMinimized(), self.isHidden(), self.isVisible(), self.isActiveWindow())
+        # 同时满足isMaximized和isMinimized 是因为最大化后，再缩小
+        if self.isMaximized() and self.isMinimized():
+            self.showMaximized()
+        elif self.isMinimized():
+            self.showNormal()
+        else:
+            return
 
     def keyPressEvent(self, event):
         # 设置 "Ctrl+Q" 快捷键，用于程序

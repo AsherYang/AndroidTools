@@ -5,6 +5,9 @@ Author: AsherYang
 Email:  ouyangfan1991@gmail.com
 Date:   2017/9/8.
 Desc:  database util
+若遇到mysql字符集编码问题:
+https://blog.csdn.net/u014657752/article/details/48206885
+https://blog.csdn.net/hzw19920329/article/details/53391421
 """
 import sys
 

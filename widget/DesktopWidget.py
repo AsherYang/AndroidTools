@@ -12,6 +12,8 @@ import sys
 from PyQt4 import QtCore, QtGui
 
 from util.EncodeUtil import _fromUtf8
+from util.QtFontUtil import QtFontUtil
+from util.SchedulerUtil import SchedulerUtil, tick
 
 
 class DesktopWidget(QtGui.QWidget):
@@ -20,11 +22,14 @@ class DesktopWidget(QtGui.QWidget):
         self.rightButton = False
         self.dragPos = 0
         self.initUI()
-        self.show()
+        self.doJob()
+        # self.show()
 
     def initUI(self):
         screen = QtGui.QDesktopWidget().screenGeometry()
-        self.setGeometry(screen.width() / 20 * 17, screen.height() / 20 * 1, 200, 200)
+        self.setGeometry(screen.width() / 20 * 16, screen.height() / 20 * 1, 350, 30)
+        # we can resize the widget. https://blog.csdn.net/y673582465/article/details/73603265
+        sizeGrip = QtGui.QSizeGrip(self)
         self.setWindowTitle('AndroidTools')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.SubWindow)
         quitAction = QtGui.QAction(_fromUtf8("退出"), self)
@@ -33,12 +38,15 @@ class DesktopWidget(QtGui.QWidget):
         self.popMenu.addAction(quitAction)
 
         mainLayout = QtGui.QVBoxLayout()
-        label = QtGui.QLabel(_fromUtf8("ninnain"))
-        mainLayout.addWidget(label)
+        self.weatherlabel = QtGui.QLabel(_fromUtf8("天气"))
+        self.weatherlabel.setPalette(QtFontUtil().setFontColor2Palette(QtCore.Qt.black))
+        mainLayout.addWidget(self.weatherlabel)
+        mainLayout.addStretch(1)
         self.setLayout(mainLayout)
-        self.setTransparency(QtCore.Qt.red, 0.2)
+        tranColor = QtGui.QColor(0xDE, 0xDE, 0xDE)
+        self.setTransparency(tranColor)
 
-    def updateMsg(self):
+    def updateMsg(self, title, msg, titleColor, msgColor):
         pass
 
     def mouseReleaseEvent(self, event):
@@ -58,14 +66,21 @@ class DesktopWidget(QtGui.QWidget):
         if event.button() == QtCore.Qt.RightButton and not self.rightButton:
             self.rightButton = True
 
-    def setTransparency(self, color, p_float):
+    # https://blog.csdn.net/seanyxie/article/details/5930779
+    def setTransparency(self, color, p_float=0.5):
         p = self.palette()
-        p.setColor(self.backgroundRole(), color)
+        p.setColor(QtGui.QPalette.Background, color)
         self.setPalette(p)
         self.setWindowOpacity(p_float)
+
+    def doJob(self):
+        schedulerUtil = SchedulerUtil()
+        schedulerUtil.addJob(tick)
+        schedulerUtil.start()
 
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
     desktopWidget = DesktopWidget()
+    desktopWidget.show()
     sys.exit(app.exec_())

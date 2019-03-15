@@ -12,6 +12,7 @@ from PyQt4 import QtCore, QtGui
 from util.EncodeUtil import _fromUtf8
 from win.LockWinScreen import LockWinScreen
 from win.KeepWinAlive import KeepWinAlive
+from widget.DesktopWidget import DesktopWidget
 
 
 class OtherToolsWidget(QtGui.QWidget):
@@ -19,6 +20,7 @@ class OtherToolsWidget(QtGui.QWidget):
         QtGui.QWidget.__init__(self, parent)
         self.keepAlive = KeepWinAlive()
         self.keepAlive.cancel_call_back = self.keepWinCancelCallBack
+        self.desktopWidget = DesktopWidget()
         mainLayout = QtGui.QVBoxLayout()
         firstGroupBox = QtGui.QGroupBox(_fromUtf8("Windows"))
         firstHBox = QtGui.QHBoxLayout()
@@ -26,13 +28,16 @@ class OtherToolsWidget(QtGui.QWidget):
         lockScreenBtn = QtGui.QPushButton(_fromUtf8("电脑锁屏"))
         self.keepScreenOnBtn = QtGui.QPushButton(_fromUtf8("电脑常亮"))
         cancelScreeOnBtn = QtGui.QPushButton(_fromUtf8("取消常亮"))
+        showDesktopWidgetBtn = QtGui.QPushButton(_fromUtf8("显示窗口小部件"))
         lockScreenBtn.connect(lockScreenBtn, QtCore.SIGNAL('clicked()'), self.lockScreenBtnClick)
         self.keepScreenOnBtn.connect(self.keepScreenOnBtn, QtCore.SIGNAL('clicked()'), self.keepScreenOnBtnClick)
         cancelScreeOnBtn.connect(cancelScreeOnBtn, QtCore.SIGNAL('clicked()'), self.cancelScreenOnBtnClick)
+        showDesktopWidgetBtn.connect(showDesktopWidgetBtn, QtCore.SIGNAL('clicked()'), self.showDesktopWidget)
 
         firstHBox.addWidget(lockScreenBtn)
         firstHBox.addWidget(self.keepScreenOnBtn)
         firstHBox.addWidget(cancelScreeOnBtn)
+        firstHBox.addWidget(showDesktopWidgetBtn)
         firstHBox.addStretch(1)
         firstGroupBox.setLayout(firstHBox)
 
@@ -64,3 +69,5 @@ class OtherToolsWidget(QtGui.QWidget):
     def setWinWTSMonitor(self, wtsMonitor):
         self.keepAlive.setWinWTSMonitor(wtsMonitor)
 
+    def showDesktopWidget(self):
+        self.desktopWidget.show()

@@ -8,7 +8,7 @@ Date  : 2018/7/11
 Desc  : 字体设置工具类
 """
 from PyQt4.QtGui import QFont
-from PyQt4 import QtCore
+from PyQt4 import QtCore, QtGui
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -37,3 +37,8 @@ class QtFontUtil:
         font.setItalic(italic)
         font.setUnderline(Underline)
         return font
+
+    def setFontColor2Palette(self, color=QtCore.Qt.black):
+        palette = QtGui.QPalette()
+        palette.setColor(QtGui.QPalette.WindowText, color)
+        return palette

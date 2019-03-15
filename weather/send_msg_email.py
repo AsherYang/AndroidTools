@@ -17,7 +17,9 @@ class SendEmail():
 			   if you need others, should replace some hard-code
 	youdontgetme@qq.com youdontgetme123 setting POP3
 	13532768544@139.com yougetme123
+	13553831061@139.com
 	15818679532@139.com
+	13714325295@139.com
 	"""
 	def __init__(self, fromaddr='15014769149@139.com', password='yougetme123', toaddrs=['13553831061@139.com'], subject='天气预报'):
 		self.fromaddr = fromaddr

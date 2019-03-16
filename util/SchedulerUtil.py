@@ -16,7 +16,6 @@ from apscheduler.executors.pool import ThreadPoolExecutor, ProcessPoolExecutor
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from util.DateUtil import DateUtil
 from weather.send_msg_email import SendEmail
 
 logging.basicConfig()
@@ -42,26 +41,27 @@ class SchedulerUtil:
                                              job_defaults=self.job_defaults, daemon=True)
         # self.scheduler = BlockingScheduler()
 
-    def addJob(self, job_func, id='job_cron', trigger='cron'):
-        self.scheduler.add_job(func=job_func, id='job_cron', trigger='cron', hour=11, minute=00,
-                               misfire_grace_time=60, replace_existing=True)
-        # self.scheduler.add_job(func=job_func, args=['job_cr', ], trigger='cron', hour=10, minute=02)
-        # self.scheduler.add_job(func=job_func, trigger='interval', seconds=2)
+    """
+    # self.scheduler.add_job(func=job_func, id='job_cron', trigger='cron', hour=11, minute=00,
+    #                        misfire_grace_time=60, replace_existing=True)
+    # self.scheduler.add_job(func=job_func, args=['job_cr', ], trigger='cron', hour=10, minute=02)
+    # self.scheduler.add_job(func=job_func, trigger='interval', seconds=2)
+    """
+    def addJob(self, job_func, id=None, trigger=None, **trigger_args):
+        self.scheduler.add_job(func=job_func, id=id, trigger=trigger, misfire_grace_time=60,
+                               replace_existing=True, **trigger_args)
 
     def start(self):
         self.scheduler.start()
 
-
-# job function
-def tick():
-    strTmp = 'Tick !  The time is: %s ' % DateUtil().getCurrentTime()
-    # print strTmp
-    _logger.debug(strTmp)
-    sendEmail = SendEmail(subject="小帆提醒您")
-    sendEmail.send("小芬芬, 要打卡啦~")
+    # job function
+    @staticmethod
+    def tick():
+        sendEmail = SendEmail(subject="小帆提醒您")
+        sendEmail.send("小芬芬, 要打卡啦~")
 
 
 if __name__ == '__main__':
     schedulerUtil = SchedulerUtil()
-    schedulerUtil.addJob(tick)
+    schedulerUtil.addJob(job_func=SchedulerUtil.tick, id='job_interval', trigger='interval', seconds=2)
     schedulerUtil.start()

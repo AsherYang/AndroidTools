@@ -13,7 +13,6 @@ from PyQt4 import QtCore, QtGui
 
 from util.EncodeUtil import _fromUtf8
 from util.QtFontUtil import QtFontUtil
-from util.SchedulerUtil import SchedulerUtil, tick
 
 
 class DesktopWidget(QtGui.QWidget):
@@ -22,7 +21,6 @@ class DesktopWidget(QtGui.QWidget):
         self.rightButton = False
         self.dragPos = 0
         self.initUI()
-        self.doJob()
         # self.show()
 
     def initUI(self):
@@ -46,7 +44,10 @@ class DesktopWidget(QtGui.QWidget):
         tranColor = QtGui.QColor(0xDE, 0xDE, 0xDE)
         self.setTransparency(tranColor)
 
-    def updateMsg(self, title, msg, titleColor, msgColor):
+    def updateMsg(self, title, msg):
+        pass
+
+    def showWeather(self):
         pass
 
     def mouseReleaseEvent(self, event):
@@ -72,11 +73,6 @@ class DesktopWidget(QtGui.QWidget):
         p.setColor(QtGui.QPalette.Background, color)
         self.setPalette(p)
         self.setWindowOpacity(p_float)
-
-    def doJob(self):
-        schedulerUtil = SchedulerUtil()
-        schedulerUtil.addJob(tick)
-        schedulerUtil.start()
 
 
 if __name__ == '__main__':

@@ -26,6 +26,7 @@ from util import QSettingsUtil
 from util import SupportFiles
 from util.EncodeUtil import _translate, _fromUtf8
 from util.RunSysCommand import RunSysCommand
+from task.WorkClockTask import WorkClockTask
 from view.AdbToolView import AdbToolView
 from view.BaseInfoView import BaseInfoView
 from view.OtherToolsView import OtherToolsView
@@ -94,6 +95,9 @@ class Ui_MainWidget(object):
         self.containerWidget.addWidget(baseInfoView)
         self.mainLayout.addWidget(self.containerWidget)
         self.centralwidget.setLayout(self.mainLayout)
+
+        # add task job
+        self.doTaskJob()
 
         # 处理右键打开，或者直接拖文件到桌面图标启动。
         # argv 参数大于1，说明有其他文件路径。第0位是当前应用程序，第1位则是我们需要处理的文件路径
@@ -175,6 +179,12 @@ class Ui_MainWidget(object):
         settingsView = SettingsView()
         self.containerWidget.addWidget(settingsView)
         self.containerWidget.setCurrentWidget(settingsView)
+
+    # 开始任务
+    def doTaskJob(self):
+        # 上班打卡
+        workClock = WorkClockTask()
+        workClock.add_work_clock()
 
 
 class AndroidToolsMainWindow(QtGui.QMainWindow):

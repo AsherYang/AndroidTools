@@ -13,6 +13,8 @@ from PyQt4 import QtCore, QtGui
 
 from util.EncodeUtil import _fromUtf8
 from util.QtFontUtil import QtFontUtil
+from weather.get_weather import Weather
+from task.WeatherTask import WeatherTask
 
 
 class DesktopWidget(QtGui.QWidget):
@@ -21,7 +23,8 @@ class DesktopWidget(QtGui.QWidget):
         self.rightButton = False
         self.dragPos = 0
         self.initUI()
-        # self.show()
+        self.showWeather()
+        self.addWeatherJob()
 
     def initUI(self):
         screen = QtGui.QDesktopWidget().screenGeometry()
@@ -48,7 +51,18 @@ class DesktopWidget(QtGui.QWidget):
         pass
 
     def showWeather(self):
-        pass
+        city = '东莞'
+        weather = Weather(city)
+        meizuWeather = weather.getWeatherByMeizu()
+        weather_now = meizuWeather.city + ": " + meizuWeather.weathers.date.replace('-', '') + \
+                      meizuWeather.weathers.week + ' ' + meizuWeather.weathers.weather + \
+                      meizuWeather.weathers.temp_day_c + '/' + \
+                      meizuWeather.weathers.temp_night_c + u'℃'
+        self.weatherlabel.setText(weather_now)
+
+    def addWeatherJob(self):
+        weatherTask = WeatherTask()
+        weatherTask.add_weather_job(self.showWeather)
 
     def mouseReleaseEvent(self, event):
         if self.rightButton:

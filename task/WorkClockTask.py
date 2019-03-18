@@ -23,5 +23,5 @@ class WorkClockTask:
         scheduler.start()
 
     def notifySms(self):
-        sendEmail = SendEmail(subject="小帆提醒您")
+        sendEmail = SendEmail(toaddrs=['13714325295@139.com'], subject="小帆提醒您")
         sendEmail.send("小芬芬, 要打卡啦~")

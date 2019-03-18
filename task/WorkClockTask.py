@@ -19,7 +19,7 @@ class WorkClockTask:
     def add_work_clock(self):
         scheduler = SchedulerUtil()
         scheduler.addJob(job_func=self.notifySms, id='work_cron', trigger='cron',
-                         day_of_week='mon-fri', hour='15', minute='44')
+                         day_of_week='mon-fri', hour='9', minute='30')
         scheduler.start()
 
     def notifySms(self):

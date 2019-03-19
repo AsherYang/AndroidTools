@@ -15,6 +15,8 @@ from util.EncodeUtil import _fromUtf8
 from util.QtFontUtil import QtFontUtil
 from weather.get_weather import Weather
 from task.WeatherTask import WeatherTask
+from util.DateUtil import DateUtil
+
 
 
 class DesktopWidget(QtGui.QWidget):
@@ -23,8 +25,6 @@ class DesktopWidget(QtGui.QWidget):
         self.rightButton = False
         self.dragPos = 0
         self.initUI()
-        self.showWeather()
-        self.addWeatherJob()
 
     def initUI(self):
         screen = QtGui.QDesktopWidget().screenGeometry()
@@ -41,16 +41,14 @@ class DesktopWidget(QtGui.QWidget):
         mainLayout = QtGui.QVBoxLayout()
         self.weatherlabel = QtGui.QLabel(_fromUtf8("天气"))
         self.weatherlabel.setPalette(QtFontUtil().setFontColor2Palette(QtCore.Qt.black))
+        self.weatherlabel.connect(self.weatherlabel, QtCore.SIGNAL('weatherUpdateSignal(QString)'), self.showWeather)
         mainLayout.addWidget(self.weatherlabel)
         mainLayout.addStretch(1)
         self.setLayout(mainLayout)
         tranColor = QtGui.QColor(0xDE, 0xDE, 0xDE)
         self.setTransparency(tranColor)
 
-    def updateMsg(self, title, msg):
-        pass
-
-    def showWeather(self):
+    def getWeather(self):
         city = '东莞'
         weather = Weather(city)
         meizuWeather = weather.getWeatherByMeizu()
@@ -58,11 +56,22 @@ class DesktopWidget(QtGui.QWidget):
                       meizuWeather.weathers.week + ' ' + meizuWeather.weathers.weather + \
                       meizuWeather.weathers.temp_day_c + '/' + \
                       meizuWeather.weathers.temp_night_c + u'℃'
+        return weather_now
+
+    def showWeather(self, weather_now):
+        weather_now += str(DateUtil().getCurrentTime())
+        print '------------------showWeather-----------------' + weather_now
         self.weatherlabel.setText(weather_now)
+
+    def emitWeatherUpdateSignal(self):
+        self.weatherlabel.emit(QtCore.SIGNAL('weatherUpdateSignal(QString)'), _fromUtf8(self.getWeather()))
+
+    def weatherUpdateSignal(self, weather_now):
+        pass
 
     def addWeatherJob(self):
         weatherTask = WeatherTask()
-        weatherTask.add_weather_job(self.showWeather)
+        weatherTask.add_weather_job(self.emitWeatherUpdateSignal)
 
     def mouseReleaseEvent(self, event):
         if self.rightButton:

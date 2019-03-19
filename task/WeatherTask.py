@@ -16,7 +16,9 @@ class WeatherTask:
         pass
 
     # weather every day 8:30, 12:30, 17:30
-    def add_weather_job(self, func):
+    def add_weather_job(self, func, args=None):
         scheduler = SchedulerUtil()
-        scheduler.addJob(job_func=func, id='weather_cron', trigger='cron', hour='8,12,17', minute='30')
+        scheduler.setScheduler(scheduler.qtScheduler())
+        scheduler.addJob(job_func=func, args=args, id='weather_cron',
+                         trigger=scheduler.cronTrigger(hour='8,12,17', minute='30'))
         scheduler.start()

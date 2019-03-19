@@ -70,4 +70,6 @@ class OtherToolsWidget(QtGui.QWidget):
         self.keepAlive.setWinWTSMonitor(wtsMonitor)
 
     def showDesktopWidget(self):
+        self.desktopWidget.showWeather(self.desktopWidget.getWeather())
+        self.desktopWidget.addWeatherJob()
         self.desktopWidget.show()

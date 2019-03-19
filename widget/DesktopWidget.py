@@ -15,8 +15,6 @@ from util.EncodeUtil import _fromUtf8
 from util.QtFontUtil import QtFontUtil
 from weather.get_weather import Weather
 from task.WeatherTask import WeatherTask
-from util.DateUtil import DateUtil
-
 
 
 class DesktopWidget(QtGui.QWidget):
@@ -59,8 +57,6 @@ class DesktopWidget(QtGui.QWidget):
         return weather_now
 
     def showWeather(self, weather_now):
-        weather_now += str(DateUtil().getCurrentTime())
-        print '------------------showWeather-----------------' + weather_now
         self.weatherlabel.setText(weather_now)
 
     def emitWeatherUpdateSignal(self):

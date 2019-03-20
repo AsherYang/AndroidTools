@@ -19,6 +19,7 @@ from weather.get_weather import Weather
 from task.WeatherTask import WeatherTask
 from task.TipsTask import TipsTask
 from db.TipsDao import TipsDao
+from util.IconResourceUtil import resource_path
 
 
 class DesktopWidget(QtGui.QWidget):
@@ -28,6 +29,7 @@ class DesktopWidget(QtGui.QWidget):
         self.dragPos = 0
         self.tipsList = []
         self.initUI()
+        self.moreBtnStatus = True
 
     def initUI(self):
         screen = QtGui.QDesktopWidget().screenGeometry()
@@ -41,17 +43,23 @@ class DesktopWidget(QtGui.QWidget):
         self.popMenu = QtGui.QMenu()
         self.popMenu.addAction(quitAction)
 
-        mainLayout = QtGui.QVBoxLayout()
+        self.mainLayout = QtGui.QVBoxLayout()
+        firstHBox = QtGui.QHBoxLayout()
         self.weatherlabel = QtGui.QLabel(_fromUtf8("天气"))
         self.tipsLabel = QtGui.QLabel(_fromUtf8("桌面提示"))
+        self.moreBtn = QtGui.QPushButton()
         self.weatherlabel.setPalette(QtFontUtil().setFontColor2Palette(QtCore.Qt.black))
         self.tipsLabel.setPalette(QtFontUtil().setFontColor2Palette(QtCore.Qt.red))
         self.weatherlabel.connect(self.weatherlabel, QtCore.SIGNAL('weatherUpdateSignal(QString)'), self.showWeather)
         self.tipsLabel.connect(self.tipsLabel, QtCore.SIGNAL('tipsChangeSignal(QString)'), self.showTips)
-        mainLayout.addWidget(self.weatherlabel)
-        mainLayout.addWidget(self.tipsLabel)
-        mainLayout.addStretch(1)
-        self.setLayout(mainLayout)
+        self.moreBtn.connect(self.moreBtn, QtCore.SIGNAL('clicked()'), self.clickMoreBtn)
+        self.setMoreBtnIcon()
+        firstHBox.addWidget(self.weatherlabel)
+        firstHBox.addWidget(self.moreBtn)
+        self.mainLayout.addLayout(firstHBox)
+        self.mainLayout.addWidget(self.tipsLabel)
+        self.mainLayout.addStretch(1)
+        self.setLayout(self.mainLayout)
         tranColor = QtGui.QColor(0xDE, 0xDE, 0xDE)
         self.setTransparency(tranColor)
         self.queryTipsMethod()
@@ -114,6 +122,22 @@ class DesktopWidget(QtGui.QWidget):
 
     def tipsChangeSignal(self, tips):
         pass
+
+    def setMoreBtnIcon(self):
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(resource_path('img/android_tools_logo.png')))
+        self.moreBtn.setIcon(icon)
+
+    def clickMoreBtn(self):
+        if not self.moreBtnStatus:
+            self.tipsLabel.setVisible(True)
+            self.mainLayout.addWidget(self.tipsLabel)
+        else:
+            self.tipsLabel.setVisible(False)
+            self.mainLayout.removeWidget(self.tipsLabel)
+        size = self.mainLayout.sizeHint()
+        self.setFixedHeight(size.height())
+        self.moreBtnStatus = not self.moreBtnStatus
 
     def mouseReleaseEvent(self, event):
         if self.rightButton:

@@ -26,29 +26,40 @@ class OtherToolsWidget(QtGui.QWidget):
         mainLayout = QtGui.QVBoxLayout()
         firstGroupBox = QtGui.QGroupBox(_fromUtf8("Windows"))
         firstHBox = QtGui.QHBoxLayout()
+        # container Widget
+        containerGroupBox = QtGui.QGroupBox(_fromUtf8(""))
+        containerHBox = QtGui.QHBoxLayout()
+        self.containerWidget = QtGui.QStackedWidget()
 
         lockScreenBtn = QtGui.QPushButton(_fromUtf8("电脑锁屏"))
         self.keepScreenOnBtn = QtGui.QPushButton(_fromUtf8("电脑常亮"))
         cancelScreeOnBtn = QtGui.QPushButton(_fromUtf8("取消常亮"))
         showDesktopWidgetBtn = QtGui.QPushButton(_fromUtf8("显示窗口小部件"))
         tipsOperateBtn = QtGui.QPushButton(_fromUtf8("提醒信息"))
+        todoListBtn = QtGui.QPushButton(_fromUtf8("todoList"))
         lockScreenBtn.connect(lockScreenBtn, QtCore.SIGNAL('clicked()'), self.lockScreenBtnClick)
         self.keepScreenOnBtn.connect(self.keepScreenOnBtn, QtCore.SIGNAL('clicked()'), self.keepScreenOnBtnClick)
         cancelScreeOnBtn.connect(cancelScreeOnBtn, QtCore.SIGNAL('clicked()'), self.cancelScreenOnBtnClick)
         showDesktopWidgetBtn.connect(showDesktopWidgetBtn, QtCore.SIGNAL('clicked()'), self.showDesktopWidget)
         tipsOperateBtn.connect(tipsOperateBtn, QtCore.SIGNAL('clicked()'), self.showTipsOperateWin)
         self.tipsWin.connect(self.tipsWin, QtCore.SIGNAL('operTipsSignal'), self.changeTipsList)
+        todoListBtn.connect(todoListBtn, QtCore.SIGNAL('clicked()'), self.showTodoListView)
 
         firstHBox.addWidget(lockScreenBtn)
         firstHBox.addWidget(self.keepScreenOnBtn)
         firstHBox.addWidget(cancelScreeOnBtn)
         firstHBox.addWidget(showDesktopWidgetBtn)
         firstHBox.addWidget(tipsOperateBtn)
+        firstHBox.addWidget(todoListBtn)
         firstHBox.addStretch(1)
         firstGroupBox.setLayout(firstHBox)
 
+        self.containerWidget.addWidget(self.tipsWin)
+        containerHBox.addWidget(self.containerWidget)
+        containerGroupBox.setLayout(containerHBox)
         mainLayout.addWidget(firstGroupBox)
-        mainLayout.addStretch(1)
+        mainLayout.addStretch(3)
+        mainLayout.addWidget(containerGroupBox, 1)
         self.setLayout(mainLayout)
 
     # 锁屏
@@ -83,7 +94,12 @@ class OtherToolsWidget(QtGui.QWidget):
 
     def showTipsOperateWin(self):
         self.tipsWin.setTips(_fromUtf8("添加删除时，需填写相关的提醒事项~"))
-        self.tipsWin.show()
+        # self.tipsWin.show()
+        self.containerWidget.addWidget(self.tipsWin)
+        self.containerWidget.setCurrentWidget(self.tipsWin)
+
+    def showTodoListView(self):
+        pass
 
     def changeTipsList(self):
         self.desktopWidget.queryTipsMethod()

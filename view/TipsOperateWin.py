@@ -103,6 +103,7 @@ class TipsOperateWin(QtGui.QMainWindow):
         if result:
             self.setTips(_fromUtf8("提醒事项添加加成功~"))
             self.hasOperTipsList(tipBean.tips_desc, TipsOperateWin.operateAdd)
+            self.emitOperTips()
         else:
             self.setTips(_fromUtf8("提醒事项添加失败, 请检查!"))
 
@@ -115,6 +116,7 @@ class TipsOperateWin(QtGui.QMainWindow):
         if result:
             self.setTips(_fromUtf8("提醒事项已删除"))
             self.hasOperTipsList(tipsDesc, TipsOperateWin.operateDelete)
+            self.emitOperTips()
         else:
             self.setTips(_fromUtf8("提醒事项删除失败, 请检查!"))
 
@@ -139,6 +141,13 @@ class TipsOperateWin(QtGui.QMainWindow):
         elif operate == TipsOperateWin.operateDelete:
             self.tipsList.remove(tip_desc)
         self.tipsListEdit.setText("\n".join(self.tipsList))
+
+    # 发送操作tips 改变的通知
+    def emitOperTips(self):
+        self.emit(QtCore.SIGNAL('operTipsSignal'))
+
+    def operTipsSignal(self):
+        pass
 
 
 if __name__ == '__main__':

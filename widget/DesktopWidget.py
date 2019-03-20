@@ -11,10 +11,14 @@ import sys
 
 from PyQt4 import QtCore, QtGui
 
+import threading
+from random import choice
 from util.EncodeUtil import _fromUtf8
 from util.QtFontUtil import QtFontUtil
 from weather.get_weather import Weather
 from task.WeatherTask import WeatherTask
+from task.TipsTask import TipsTask
+from db.TipsDao import TipsDao
 
 
 class DesktopWidget(QtGui.QWidget):
@@ -22,6 +26,7 @@ class DesktopWidget(QtGui.QWidget):
         QtGui.QWidget.__init__(self, parent)
         self.rightButton = False
         self.dragPos = 0
+        self.tipsList = []
         self.initUI()
 
     def initUI(self):
@@ -38,15 +43,18 @@ class DesktopWidget(QtGui.QWidget):
 
         mainLayout = QtGui.QVBoxLayout()
         self.weatherlabel = QtGui.QLabel(_fromUtf8("天气"))
-        self.weatherlabel.setPalette(QtFontUtil().setFontColor2Palette(QtCore.Qt.black))
-        self.weatherlabel.connect(self.weatherlabel, QtCore.SIGNAL('weatherUpdateSignal(QString)'), self.showWeather)
         self.tipsLabel = QtGui.QLabel(_fromUtf8("桌面提示"))
+        self.weatherlabel.setPalette(QtFontUtil().setFontColor2Palette(QtCore.Qt.black))
+        self.tipsLabel.setPalette(QtFontUtil().setFontColor2Palette(QtCore.Qt.red))
+        self.weatherlabel.connect(self.weatherlabel, QtCore.SIGNAL('weatherUpdateSignal(QString)'), self.showWeather)
+        self.tipsLabel.connect(self.tipsLabel, QtCore.SIGNAL('tipsChangeSignal(QString)'), self.showTips)
         mainLayout.addWidget(self.weatherlabel)
         mainLayout.addWidget(self.tipsLabel)
         mainLayout.addStretch(1)
         self.setLayout(mainLayout)
         tranColor = QtGui.QColor(0xDE, 0xDE, 0xDE)
         self.setTransparency(tranColor)
+        self.queryTipsMethod()
 
     def getWeather(self):
         city = '东莞'
@@ -70,6 +78,42 @@ class DesktopWidget(QtGui.QWidget):
     def addWeatherJob(self):
         weatherTask = WeatherTask()
         weatherTask.add_weather_job(self.emitWeatherUpdateSignal)
+
+    def addTipsJoB(self):
+        tipsTask = TipsTask()
+        tipsTask.add_tips_job(self.changeTipsShow)
+
+    def queryTipsMethod(self):
+        thread = threading.Thread(target=self.queryTipsFromDb)
+        thread.setDaemon(True)
+        thread.start()
+
+    def queryTipsFromDb(self):
+        tipsDao = TipsDao()
+        tipsBeanList = tipsDao.queryAll()
+        if not tipsBeanList:
+            return
+        # 重新初始化
+        self.tipsList[:] = []
+        for tip in tipsBeanList:
+            self.tipsList.append(tip.tips_desc)
+        tips = choice(self.tipsList)
+        self.emitTipsChangeShow(_fromUtf8(tips))
+
+    # 定时器中直接拿内存数据，不进行数据库查询
+    def changeTipsShow(self):
+        if self.tipsList:
+            tips = choice(self.tipsList)
+            self.emitTipsChangeShow(_fromUtf8(tips))
+
+    def showTips(self, tips):
+        self.tipsLabel.setText(unicode(tips))
+
+    def emitTipsChangeShow(self, tips):
+        self.tipsLabel.emit(QtCore.SIGNAL('tipsChangeSignal(QString)'), tips)
+
+    def tipsChangeSignal(self, tips):
+        pass
 
     def mouseReleaseEvent(self, event):
         if self.rightButton:

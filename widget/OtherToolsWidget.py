@@ -37,6 +37,7 @@ class OtherToolsWidget(QtGui.QWidget):
         cancelScreeOnBtn.connect(cancelScreeOnBtn, QtCore.SIGNAL('clicked()'), self.cancelScreenOnBtnClick)
         showDesktopWidgetBtn.connect(showDesktopWidgetBtn, QtCore.SIGNAL('clicked()'), self.showDesktopWidget)
         tipsOperateBtn.connect(tipsOperateBtn, QtCore.SIGNAL('clicked()'), self.showTipsOperateWin)
+        self.tipsWin.connect(self.tipsWin, QtCore.SIGNAL('operTipsSignal'), self.changeTipsList)
 
         firstHBox.addWidget(lockScreenBtn)
         firstHBox.addWidget(self.keepScreenOnBtn)
@@ -77,8 +78,12 @@ class OtherToolsWidget(QtGui.QWidget):
     def showDesktopWidget(self):
         self.desktopWidget.showWeather(self.desktopWidget.getWeather())
         self.desktopWidget.addWeatherJob()
+        self.desktopWidget.addTipsJoB()
         self.desktopWidget.show()
 
     def showTipsOperateWin(self):
         self.tipsWin.setTips(_fromUtf8("添加删除时，需填写相关的提醒事项~"))
         self.tipsWin.show()
+
+    def changeTipsList(self):
+        self.desktopWidget.queryTipsMethod()

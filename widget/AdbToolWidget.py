@@ -106,6 +106,7 @@ class AdbToolWidget(QtGui.QWidget):
         if not adbBeanList:
             self.printLog(_fromUtf8("请先添加常用的ADB指令~"))
             return
+        # 重新初始化
         self.adbCmdList[:] = []
         for adbBean in adbBeanList:
             self.adbCmdList.append(unicode(adbBean.adb_cmd))

@@ -12,3 +12,6 @@ TIPS_TYPE_STUDY = "study"
 TIPS_TYPE_WORK = "work"
 TIPS_TYPE_FUN = "fun"
 
+
+def tips_type():
+    return [TIPS_TYPE_STUDY, TIPS_TYPE_WORK, TIPS_TYPE_FUN]

@@ -13,12 +13,14 @@ from util.EncodeUtil import _fromUtf8
 from win.LockWinScreen import LockWinScreen
 from win.KeepWinAlive import KeepWinAlive
 from widget.DesktopWidget import DesktopWidget
+from view.TipsOperateWin import TipsOperateWin
 
 
 class OtherToolsWidget(QtGui.QWidget):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
         self.keepAlive = KeepWinAlive()
+        self.tipsWin = TipsOperateWin()
         self.keepAlive.cancel_call_back = self.keepWinCancelCallBack
         self.desktopWidget = DesktopWidget()
         mainLayout = QtGui.QVBoxLayout()
@@ -78,4 +80,5 @@ class OtherToolsWidget(QtGui.QWidget):
         self.desktopWidget.show()
 
     def showTipsOperateWin(self):
-        pass
+        self.tipsWin.setTips(_fromUtf8("添加删除时，需填写相关的提醒事项~"))
+        self.tipsWin.show()

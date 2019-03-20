@@ -5,7 +5,7 @@
 Author: AsherYang
 Email : ouyangfan1991@gmail.com
 Date  : 2019/03/06
-Desc  :
+Desc  : adb 数据集合操作窗口
 """
 
 import sys

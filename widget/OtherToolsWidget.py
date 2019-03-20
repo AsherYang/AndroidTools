@@ -29,15 +29,18 @@ class OtherToolsWidget(QtGui.QWidget):
         self.keepScreenOnBtn = QtGui.QPushButton(_fromUtf8("电脑常亮"))
         cancelScreeOnBtn = QtGui.QPushButton(_fromUtf8("取消常亮"))
         showDesktopWidgetBtn = QtGui.QPushButton(_fromUtf8("显示窗口小部件"))
+        tipsOperateBtn = QtGui.QPushButton(_fromUtf8("提醒信息"))
         lockScreenBtn.connect(lockScreenBtn, QtCore.SIGNAL('clicked()'), self.lockScreenBtnClick)
         self.keepScreenOnBtn.connect(self.keepScreenOnBtn, QtCore.SIGNAL('clicked()'), self.keepScreenOnBtnClick)
         cancelScreeOnBtn.connect(cancelScreeOnBtn, QtCore.SIGNAL('clicked()'), self.cancelScreenOnBtnClick)
         showDesktopWidgetBtn.connect(showDesktopWidgetBtn, QtCore.SIGNAL('clicked()'), self.showDesktopWidget)
+        tipsOperateBtn.connect(tipsOperateBtn, QtCore.SIGNAL('clicked()'), self.showTipsOperateWin)
 
         firstHBox.addWidget(lockScreenBtn)
         firstHBox.addWidget(self.keepScreenOnBtn)
         firstHBox.addWidget(cancelScreeOnBtn)
         firstHBox.addWidget(showDesktopWidgetBtn)
+        firstHBox.addWidget(tipsOperateBtn)
         firstHBox.addStretch(1)
         firstGroupBox.setLayout(firstHBox)
 
@@ -73,3 +76,6 @@ class OtherToolsWidget(QtGui.QWidget):
         self.desktopWidget.showWeather(self.desktopWidget.getWeather())
         self.desktopWidget.addWeatherJob()
         self.desktopWidget.show()
+
+    def showTipsOperateWin(self):
+        pass

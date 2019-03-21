@@ -20,5 +20,5 @@ class TipsTask:
         scheduler = SchedulerUtil()
         scheduler.setScheduler(scheduler.qtScheduler())
         scheduler.addJob(job_func=func, args=args, id='tips_cron',
-                         trigger=scheduler.cronTrigger(minute='*/1'))
+                         trigger=scheduler.cronTrigger(minute='*/5'))
         scheduler.start()

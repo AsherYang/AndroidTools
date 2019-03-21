@@ -28,12 +28,12 @@ class DesktopWidget(QtGui.QWidget):
         self.rightButton = False
         self.dragPos = 0
         self.tipsList = []
-        self.initUI()
         self.moreBtnStatus = True
+        self.initUI()
 
     def initUI(self):
         screen = QtGui.QDesktopWidget().screenGeometry()
-        self.setGeometry(screen.width() / 20 * 16, screen.height() / 20 * 1, 350, 30)
+        self.setGeometry(screen.width() / 20 * 16, screen.height() / 20 * 1, 280, 30)
         # we can resize the widget. https://blog.csdn.net/y673582465/article/details/73603265
         sizeGrip = QtGui.QSizeGrip(self)
         self.setWindowTitle('AndroidTools')
@@ -124,17 +124,22 @@ class DesktopWidget(QtGui.QWidget):
         pass
 
     def setMoreBtnIcon(self):
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(resource_path('img/android_tools_logo.png')))
-        self.moreBtn.setIcon(icon)
+        self.moreBtn.setFixedSize(15, 15)
+        imgPath = resource_path("img\more_unfold.png").replace("\\", "/")
+        # print imgPath
+        self.moreBtn.setStyleSheet("QPushButton{{border-image: url({0});}}".format(imgPath))
 
     def clickMoreBtn(self):
         if not self.moreBtnStatus:
             self.tipsLabel.setVisible(True)
             self.mainLayout.addWidget(self.tipsLabel)
+            imgPath = resource_path("img\more_unfold.png").replace("\\", "/")
+            self.moreBtn.setStyleSheet("QPushButton{{border-image: url({0});}}".format(imgPath))
         else:
             self.tipsLabel.setVisible(False)
             self.mainLayout.removeWidget(self.tipsLabel)
+            imgPath = resource_path("img\more_fold.png").replace("\\", "/")
+            self.moreBtn.setStyleSheet("QPushButton{{border-image: url({0});}}".format(imgPath))
         size = self.mainLayout.sizeHint()
         self.setFixedHeight(size.height())
         self.moreBtnStatus = not self.moreBtnStatus

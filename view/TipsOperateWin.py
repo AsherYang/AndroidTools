@@ -121,8 +121,8 @@ class TipsOperateWin(QtGui.QMainWindow):
             self.setTips(_fromUtf8("提醒事项删除失败, 请检查!"))
 
     def doQueryMethod(self):
-        tipDap = TipsDao()
-        tipsBeanList = tipDap.queryAll()
+        tipDao = TipsDao()
+        tipsBeanList = tipDao.queryAll()
         if not tipsBeanList:
             self.setTips(_fromUtf8("请先添加提醒事项~"))
             return

@@ -13,6 +13,7 @@ from util.EncodeUtil import _fromUtf8
 from win.LockWinScreen import LockWinScreen
 from win.KeepWinAlive import KeepWinAlive
 from widget.DesktopWidget import DesktopWidget
+from widget.WorkOrderWidget import WorkOrderWidget
 from view.TipsOperateWin import TipsOperateWin
 
 
@@ -26,6 +27,8 @@ class OtherToolsWidget(QtGui.QWidget):
         mainLayout = QtGui.QVBoxLayout()
         firstGroupBox = QtGui.QGroupBox(_fromUtf8("Windows"))
         firstHBox = QtGui.QHBoxLayout()
+        secondGroupBox = QtGui.QGroupBox(_fromUtf8("Work"))
+        secondHBox = QtGui.QHBoxLayout()
         # container Widget
         containerGroupBox = QtGui.QGroupBox(_fromUtf8(""))
         containerHBox = QtGui.QHBoxLayout()
@@ -36,6 +39,7 @@ class OtherToolsWidget(QtGui.QWidget):
         cancelScreeOnBtn = QtGui.QPushButton(_fromUtf8("取消常亮"))
         showDesktopWidgetBtn = QtGui.QPushButton(_fromUtf8("显示窗口小部件"))
         tipsOperateBtn = QtGui.QPushButton(_fromUtf8("提醒信息"))
+        workOrderBtn = QtGui.QPushButton(_fromUtf8("工单处理"))
         todoListBtn = QtGui.QPushButton(_fromUtf8("todoList"))
         lockScreenBtn.connect(lockScreenBtn, QtCore.SIGNAL('clicked()'), self.lockScreenBtnClick)
         self.keepScreenOnBtn.connect(self.keepScreenOnBtn, QtCore.SIGNAL('clicked()'), self.keepScreenOnBtnClick)
@@ -43,21 +47,27 @@ class OtherToolsWidget(QtGui.QWidget):
         showDesktopWidgetBtn.connect(showDesktopWidgetBtn, QtCore.SIGNAL('clicked()'), self.showDesktopWidget)
         tipsOperateBtn.connect(tipsOperateBtn, QtCore.SIGNAL('clicked()'), self.showTipsOperateWin)
         self.tipsWin.connect(self.tipsWin, QtCore.SIGNAL('operTipsSignal'), self.changeTipsList)
-        todoListBtn.connect(todoListBtn, QtCore.SIGNAL('clicked()'), self.showTodoListView)
+        workOrderBtn.connect(workOrderBtn, QtCore.SIGNAL('clicked()'), self.showWorkOrderWidget)
+        todoListBtn.connect(todoListBtn, QtCore.SIGNAL('clicked()'), self.showTodoListWidget)
 
         firstHBox.addWidget(lockScreenBtn)
         firstHBox.addWidget(self.keepScreenOnBtn)
         firstHBox.addWidget(cancelScreeOnBtn)
         firstHBox.addWidget(showDesktopWidgetBtn)
         firstHBox.addWidget(tipsOperateBtn)
-        firstHBox.addWidget(todoListBtn)
         firstHBox.addStretch(1)
         firstGroupBox.setLayout(firstHBox)
 
-        self.containerWidget.addWidget(self.tipsWin)
+        secondHBox.addWidget(workOrderBtn)
+        secondHBox.addWidget(todoListBtn)
+        secondHBox.addStretch(1)
+        secondGroupBox.setLayout(secondHBox)
+
+        # self.containerWidget.addWidget(self.tipsWin)
         containerHBox.addWidget(self.containerWidget)
         containerGroupBox.setLayout(containerHBox)
         mainLayout.addWidget(firstGroupBox)
+        mainLayout.addWidget(secondGroupBox)
         mainLayout.addStretch(3)
         mainLayout.addWidget(containerGroupBox, 1)
         self.setLayout(mainLayout)
@@ -98,7 +108,12 @@ class OtherToolsWidget(QtGui.QWidget):
         self.containerWidget.addWidget(self.tipsWin)
         self.containerWidget.setCurrentWidget(self.tipsWin)
 
-    def showTodoListView(self):
+    def showWorkOrderWidget(self):
+        workOrderWidget = WorkOrderWidget()
+        self.containerWidget.addWidget(workOrderWidget)
+        self.containerWidget.setCurrentWidget(workOrderWidget)
+
+    def showTodoListWidget(self):
         pass
 
     def changeTipsList(self):

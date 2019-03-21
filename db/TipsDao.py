@@ -5,7 +5,7 @@
 Author: AsherYang
 Email : ouyangfan1991@gmail.com
 Date  : 2019/3/9
-Desc  : adb 数据库操作接口
+Desc  : 提醒事项 数据库操作接口
 """
 
 from bean.TipsBean import TipsBean

@@ -45,6 +45,7 @@ class WorkOrderWidget(QtGui.QWidget):
         orderDeleteBtn.connect(orderDeleteBtn, QtCore.SIGNAL('clicked()'), self.orderDeleteMethod)
         orderQueryWeekBtn.connect(orderQueryWeekBtn, QtCore.SIGNAL('clicked()'), self.exportWeekData)
         orderQueryAllBtn.connect(orderQueryAllBtn, QtCore.SIGNAL('clicked()'), self.exportAllData)
+        self.orderNumEdit.connect(self.orderNumEdit, QtCore.SIGNAL('textChanged(QString)'), self.changeOrderNumInput)
 
         self.tipLabel = QtGui.QLabel()
         self.tipLabel.setFont(QtFontUtil().getFont('Monospace', 12))
@@ -70,6 +71,9 @@ class WorkOrderWidget(QtGui.QWidget):
         if text:
             self.tipLabel.setText(unicode(text))
 
+    def changeOrderNumInput(self, order_num):
+        self.tipLabel.clear()
+
     def orderAddMethod(self):
         orderNum = str(self.orderNumEdit.text()).decode('utf8')
         orderTitle = str(self.orderTitleEdit.text()).decode('utf8')
@@ -92,6 +96,7 @@ class WorkOrderWidget(QtGui.QWidget):
     def orderDeleteMethod(self):
         orderNum = str(self.orderNumEdit.text()).decode('utf8')
         if not orderNum:
+            self.setTips(_fromUtf8("删除工单信息时，工单号必不可少!"))
             return
         orderBean = WorkOrderBean()
         orderBean.order_num = orderNum

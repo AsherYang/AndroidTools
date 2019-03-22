@@ -87,7 +87,7 @@ class DesktopWidget(QtGui.QWidget):
         weatherTask = WeatherTask()
         weatherTask.add_weather_job(self.emitWeatherUpdateSignal)
 
-    def addTipsJoB(self):
+    def addTipsJob(self):
         tipsTask = TipsTask()
         tipsTask.add_tips_job(self.changeTipsShow)
 

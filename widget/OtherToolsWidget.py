@@ -99,7 +99,7 @@ class OtherToolsWidget(QtGui.QWidget):
     def showDesktopWidget(self):
         self.desktopWidget.showWeather(self.desktopWidget.getWeather())
         self.desktopWidget.addWeatherJob()
-        self.desktopWidget.addTipsJoB()
+        self.desktopWidget.addTipsJob()
         self.desktopWidget.show()
 
     def showTipsOperateWin(self):

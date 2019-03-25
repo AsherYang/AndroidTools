@@ -23,8 +23,21 @@ class DateUtil:
     def getCurrentTimeStamp(self):
         return int(time.time())
 
+    # 将时间戳转换为格式化的日期
+    def convert2Time(self, timeStamp, format_time="%Y-%m-%d %H:%M:%S"):
+        time_local = time.localtime(timeStamp)
+        format_time = time.strftime(format_time, time_local)
+        return format_time
+
+    # 将格式化日期转换为时间戳
+    def convert2TimeStamp(self, time_f, format_time="%Y-%m-%d %H:%M:%S"):
+        timeArray = time.strptime(time_f, format_time)
+        timeStamp = int(time.mktime(timeArray))
+        return timeStamp
 
 if __name__ == '__main__':
     dateUtil = DateUtil()
     print dateUtil.getCurrentTime()
     print dateUtil.getCurrentTimeStamp()
+    print dateUtil.convert2Time(1553517739)
+    print dateUtil.convert2TimeStamp("2019-03-25 20:42:19")

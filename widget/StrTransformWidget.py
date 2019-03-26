@@ -15,6 +15,7 @@ import sys
 from PyQt4 import QtCore, QtGui
 
 from util.EncodeUtil import _fromUtf8, _translate, _translateUtf8
+from util.DateUtil import DateUtil
 
 reload(sys)
 # print sys.getdefaultencoding()
@@ -52,6 +53,8 @@ class StrTransformWidget(QtGui.QWidget):
         self.operateUrlDecodeBtn = QtGui.QPushButton(_fromUtf8("URLDecode解码"))
         self.operateWin2UnixPathBtn = QtGui.QPushButton(_fromUtf8("Win路径转Linux"))
         self.operateUnix2WinPathBtn = QtGui.QPushButton(_fromUtf8("Linux路径转Win"))
+        self.operateStamp2TimeBtn = QtGui.QPushButton(_fromUtf8("时间戳转时间"))
+        self.operateTime2StampBtn = QtGui.QPushButton(_fromUtf8("时间转时间戳"))
         self.operateAscii2UnicodeBtn.connect(self.operateAscii2UnicodeBtn, QtCore.SIGNAL('clicked()'), self.ascii2UnicodeBtnClick)
         self.operateUnicode2AsciiBtn.connect(self.operateUnicode2AsciiBtn, QtCore.SIGNAL('clicked()'), self.unicode2AsciiBtnClick)
         self.operateUnicode2ChineseBtn.connect(self.operateUnicode2ChineseBtn, QtCore.SIGNAL('clicked()'), self.unicode2ChineseBtnClick)
@@ -62,6 +65,8 @@ class StrTransformWidget(QtGui.QWidget):
         self.operateUrlDecodeBtn.connect(self.operateUrlDecodeBtn, QtCore.SIGNAL('clicked()'), self.urlDecodeBtnClick)
         self.operateWin2UnixPathBtn.connect(self.operateWin2UnixPathBtn, QtCore.SIGNAL('clicked()'), self.win2UnixPathBtnClick)
         self.operateUnix2WinPathBtn.connect(self.operateUnix2WinPathBtn, QtCore.SIGNAL('clicked()'), self.unix2WinPathBtnClick)
+        self.operateStamp2TimeBtn.connect(self.operateStamp2TimeBtn, QtCore.SIGNAL('clicked()'), self.stamp2TimeBtnClick)
+        self.operateTime2StampBtn.connect(self.operateTime2StampBtn, QtCore.SIGNAL('clicked()'), self.time2StampBtnClick)
         operateHBoxOne.addWidget(self.operateAscii2UnicodeBtn)
         operateHBoxOne.addWidget(self.operateUnicode2AsciiBtn)
         operateHBoxOne.addWidget(self.operateUnicode2ChineseBtn)
@@ -72,6 +77,8 @@ class StrTransformWidget(QtGui.QWidget):
         operateHBoxOne.addWidget(self.operateUrlDecodeBtn)
         operateHBoxSecond.addWidget(self.operateWin2UnixPathBtn)
         operateHBoxSecond.addWidget(self.operateUnix2WinPathBtn)
+        operateHBoxSecond.addWidget(self.operateStamp2TimeBtn)
+        operateHBoxSecond.addWidget(self.operateTime2StampBtn)
         operateHBoxSecond.addStretch(1)
         operateVBox.addLayout(operateHBoxOne)
         operateVBox.addLayout(operateHBoxSecond)
@@ -155,3 +162,15 @@ class StrTransformWidget(QtGui.QWidget):
         if not srcStr:
             return
         self.destStrEdit.setText(srcStr.replace("/", "\\"))
+
+    def stamp2TimeBtnClick(self):
+        srcStr = unicode(self.srcStrEdit.toPlainText())
+        if not srcStr:
+            return
+        self.destStrEdit.setText(DateUtil().convert2Time(srcStr))
+
+    def time2StampBtnClick(self):
+        srcStr = unicode(self.srcStrEdit.toPlainText())
+        if not srcStr:
+            return
+        self.destStrEdit.setText(str(DateUtil().convert2TimeStamp(srcStr)))

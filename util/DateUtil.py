@@ -25,13 +25,13 @@ class DateUtil:
 
     # 将时间戳转换为格式化的日期
     def convert2Time(self, timeStamp, format_time="%Y-%m-%d %H:%M:%S"):
-        time_local = time.localtime(timeStamp)
+        time_local = time.localtime(float(timeStamp))
         format_time = time.strftime(format_time, time_local)
         return format_time
 
     # 将格式化日期转换为时间戳
     def convert2TimeStamp(self, time_f, format_time="%Y-%m-%d %H:%M:%S"):
-        timeArray = time.strptime(time_f, format_time)
+        timeArray = time.strptime(str(time_f), format_time)
         timeStamp = int(time.mktime(timeArray))
         return timeStamp
 

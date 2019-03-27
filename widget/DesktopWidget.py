@@ -76,6 +76,8 @@ class DesktopWidget(QtGui.QWidget):
 
     def showWeather(self, weather_now):
         self.weatherlabel.setText(weather_now)
+        # widget update
+        self.update()
 
     def emitWeatherUpdateSignal(self):
         self.weatherlabel.emit(QtCore.SIGNAL('weatherUpdateSignal(QString)'), _fromUtf8(self.getWeather()))
@@ -116,6 +118,8 @@ class DesktopWidget(QtGui.QWidget):
 
     def showTips(self, tips):
         self.tipsLabel.setText(unicode(tips))
+        # widget update
+        self.update()
 
     def emitTipsChangeShow(self, tips):
         self.tipsLabel.emit(QtCore.SIGNAL('tipsChangeSignal(QString)'), tips)

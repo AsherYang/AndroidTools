@@ -20,6 +20,7 @@ from task.WeatherTask import WeatherTask
 from task.TipsTask import TipsTask
 from db.TipsDao import TipsDao
 from util.IconResourceUtil import resource_path
+from util.DateUtil import DateUtil
 
 
 class DesktopWidget(QtGui.QWidget):
@@ -112,11 +113,13 @@ class DesktopWidget(QtGui.QWidget):
 
     # 定时器中直接拿内存数据，不进行数据库查询
     def changeTipsShow(self):
+        print 'changeTipsShow: ', self.tipsList
         if self.tipsList:
             tips = choice(self.tipsList)
             self.emitTipsChangeShow(_fromUtf8(tips))
 
     def showTips(self, tips):
+        tips += str(DateUtil().getCurrentTime())
         self.tipsLabel.setText(unicode(tips))
         # widget update
         self.update()
@@ -136,12 +139,12 @@ class DesktopWidget(QtGui.QWidget):
     def clickMoreBtn(self):
         if not self.moreBtnStatus:
             self.tipsLabel.setVisible(True)
-            self.mainLayout.addWidget(self.tipsLabel)
+            # self.mainLayout.addWidget(self.tipsLabel)
             imgPath = resource_path("img\more_unfold.png").replace("\\", "/")
             self.moreBtn.setStyleSheet("QPushButton{{border-image: url({0});}}".format(imgPath))
         else:
             self.tipsLabel.setVisible(False)
-            self.mainLayout.removeWidget(self.tipsLabel)
+            # self.mainLayout.removeWidget(self.tipsLabel)
             imgPath = resource_path("img\more_fold.png").replace("\\", "/")
             self.moreBtn.setStyleSheet("QPushButton{{border-image: url({0});}}".format(imgPath))
         size = self.mainLayout.sizeHint()

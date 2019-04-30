@@ -128,6 +128,7 @@ class AdbUtil:
                 callBack(_fromUtf8("未获取到设备, 请检查USB连接~"))
             return result
         cmd2 = str('%s -s %s pull %s %s' % (adbCmd, self.getCurrentSerialNo(), screenPath, destPath))
+        callBack(_fromUtf8("正在截屏操作, 请稍后.."))
         result = self._runSysCmd.run(cmd2, should_process=False).stdout.read()
         if "file pulled" in result:
             # os.startfile('d:\\adbTools')

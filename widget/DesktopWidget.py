@@ -119,7 +119,7 @@ class DesktopWidget(QtGui.QWidget):
             self.emitTipsChangeShow(_fromUtf8(tips))
 
     def showTips(self, tips):
-        tips += str(DateUtil().getCurrentTime())
+        # tips += str(DateUtil().getCurrentTime())
         self.tipsLabel.setText(unicode(tips))
         # widget update
         self.update()

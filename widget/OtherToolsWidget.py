@@ -14,6 +14,7 @@ from win.LockWinScreen import LockWinScreen
 from win.KeepWinAlive import KeepWinAlive
 from widget.DesktopWidget import DesktopWidget
 from widget.WorkOrderWidget import WorkOrderWidget
+from widget.TranslateWidget import TranslateWidget
 from view.TipsOperateWin import TipsOperateWin
 
 
@@ -40,6 +41,7 @@ class OtherToolsWidget(QtGui.QWidget):
         showDesktopWidgetBtn = QtGui.QPushButton(_fromUtf8("显示窗口小部件"))
         tipsOperateBtn = QtGui.QPushButton(_fromUtf8("提醒信息"))
         workOrderBtn = QtGui.QPushButton(_fromUtf8("工单处理"))
+        translateBtn = QtGui.QPushButton(_fromUtf8("有道翻译"))
         todoListBtn = QtGui.QPushButton(_fromUtf8("todoList"))
         lockScreenBtn.connect(lockScreenBtn, QtCore.SIGNAL('clicked()'), self.lockScreenBtnClick)
         self.keepScreenOnBtn.connect(self.keepScreenOnBtn, QtCore.SIGNAL('clicked()'), self.keepScreenOnBtnClick)
@@ -48,6 +50,7 @@ class OtherToolsWidget(QtGui.QWidget):
         tipsOperateBtn.connect(tipsOperateBtn, QtCore.SIGNAL('clicked()'), self.showTipsOperateWin)
         self.tipsWin.connect(self.tipsWin, QtCore.SIGNAL('operTipsSignal'), self.changeTipsList)
         workOrderBtn.connect(workOrderBtn, QtCore.SIGNAL('clicked()'), self.showWorkOrderWidget)
+        translateBtn.connect(translateBtn, QtCore.SIGNAL('clicked()'), self.showTranslateWidget)
         todoListBtn.connect(todoListBtn, QtCore.SIGNAL('clicked()'), self.showTodoListWidget)
 
         firstHBox.addWidget(lockScreenBtn)
@@ -59,6 +62,7 @@ class OtherToolsWidget(QtGui.QWidget):
         firstGroupBox.setLayout(firstHBox)
 
         secondHBox.addWidget(workOrderBtn)
+        secondHBox.addWidget(translateBtn)
         secondHBox.addWidget(todoListBtn)
         secondHBox.addStretch(1)
         secondGroupBox.setLayout(secondHBox)
@@ -68,7 +72,7 @@ class OtherToolsWidget(QtGui.QWidget):
         containerGroupBox.setLayout(containerHBox)
         mainLayout.addWidget(firstGroupBox)
         mainLayout.addWidget(secondGroupBox)
-        mainLayout.addStretch(3)
+        # mainLayout.addStretch(1)
         mainLayout.addWidget(containerGroupBox, 1)
         self.setLayout(mainLayout)
 
@@ -112,6 +116,11 @@ class OtherToolsWidget(QtGui.QWidget):
         workOrderWidget = WorkOrderWidget()
         self.containerWidget.addWidget(workOrderWidget)
         self.containerWidget.setCurrentWidget(workOrderWidget)
+
+    def showTranslateWidget(self):
+        translateWidget = TranslateWidget()
+        self.containerWidget.addWidget(translateWidget)
+        self.containerWidget.setCurrentWidget(translateWidget)
 
     def showTodoListWidget(self):
         pass

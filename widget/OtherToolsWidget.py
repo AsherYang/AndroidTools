@@ -15,6 +15,7 @@ from win.KeepWinAlive import KeepWinAlive
 from widget.DesktopWidget import DesktopWidget
 from widget.WorkOrderWidget import WorkOrderWidget
 from widget.TranslateWidget import TranslateWidget
+from widget.CopyFileWidget import CopyFileWidget
 from view.TipsOperateWin import TipsOperateWin
 
 
@@ -42,6 +43,7 @@ class OtherToolsWidget(QtGui.QWidget):
         tipsOperateBtn = QtGui.QPushButton(_fromUtf8("提醒信息"))
         workOrderBtn = QtGui.QPushButton(_fromUtf8("工单处理"))
         translateBtn = QtGui.QPushButton(_fromUtf8("有道翻译"))
+        copyFileBtn = QtGui.QPushButton(_fromUtf8("文件拷贝"))
         todoListBtn = QtGui.QPushButton(_fromUtf8("todoList"))
         lockScreenBtn.connect(lockScreenBtn, QtCore.SIGNAL('clicked()'), self.lockScreenBtnClick)
         self.keepScreenOnBtn.connect(self.keepScreenOnBtn, QtCore.SIGNAL('clicked()'), self.keepScreenOnBtnClick)
@@ -51,6 +53,7 @@ class OtherToolsWidget(QtGui.QWidget):
         self.tipsWin.connect(self.tipsWin, QtCore.SIGNAL('operTipsSignal'), self.changeTipsList)
         workOrderBtn.connect(workOrderBtn, QtCore.SIGNAL('clicked()'), self.showWorkOrderWidget)
         translateBtn.connect(translateBtn, QtCore.SIGNAL('clicked()'), self.showTranslateWidget)
+        copyFileBtn.connect(copyFileBtn, QtCore.SIGNAL('clicked()'), self.showCopyFileWidget)
         todoListBtn.connect(todoListBtn, QtCore.SIGNAL('clicked()'), self.showTodoListWidget)
 
         firstHBox.addWidget(lockScreenBtn)
@@ -63,6 +66,7 @@ class OtherToolsWidget(QtGui.QWidget):
 
         secondHBox.addWidget(workOrderBtn)
         secondHBox.addWidget(translateBtn)
+        secondHBox.addWidget(copyFileBtn)
         secondHBox.addWidget(todoListBtn)
         secondHBox.addStretch(1)
         secondGroupBox.setLayout(secondHBox)
@@ -121,6 +125,11 @@ class OtherToolsWidget(QtGui.QWidget):
         translateWidget = TranslateWidget()
         self.containerWidget.addWidget(translateWidget)
         self.containerWidget.setCurrentWidget(translateWidget)
+
+    def showCopyFileWidget(self):
+        copyFileWidget = CopyFileWidget()
+        self.containerWidget.addWidget(copyFileWidget)
+        self.containerWidget.setCurrentWidget(copyFileWidget)
 
     def showTodoListWidget(self):
         pass

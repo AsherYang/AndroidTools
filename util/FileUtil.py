@@ -10,6 +10,7 @@ http://blog.csdn.net/ziyuzhao123/article/details/8811496
 """
 
 import os
+import shutil
 
 
 # 从文件路径中提取文件名(包括后缀拓展名)
@@ -69,6 +70,7 @@ def getAllFilesByExt(dir, fileExt):
                 fileList.append(os.path.join(root, file))
     return fileList
 
+
 # 获取指定目录下的子一级目录
 def getSubDir(dir):
     dir = unicode(dir)
@@ -92,3 +94,20 @@ def isFileOrDirExist(filePath):
     return os.path.exists(filePath)
 
 
+# 拷贝文件
+def copyFile(srcFile, destFile):
+    if not os.path.isfile(srcFile):
+        return
+    fpath, fname = os.path.split(destFile)
+    if not os.path.exists(fpath):
+        os.makedirs(fpath)
+    shutil.copyfile(srcFile, destFile)
+
+
+# 删除文件夹
+def removeDirs(directory):
+    shutil.rmtree(directory)
+
+
+if __name__ == '__main__':
+    copyFile("G:\\android_studio\\settings.jar", "G:\\copyfile\\2.txt")

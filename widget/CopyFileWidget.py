@@ -36,8 +36,8 @@ class CopyFileWidget(QtGui.QWidget):
         self.srcFilePathEdit.setMinimumHeight(25)
         self.destFilePathEdit.setMinimumHeight(25)
 
-        self.srcFilePathEdit.setText(_fromUtf8("Y:\work_src\gitlab\I13\HLOS"))
-        self.destFilePathEdit.setText(_fromUtf8("G:\copyfile"))
+        self.srcFilePathEdit.setPlaceholderText(_fromUtf8("Y:\work_src\gitlab\I13\HLOS"))
+        self.destFilePathEdit.setPlaceholderText(_fromUtf8("G:\copyfile"))
 
         self.copyFileBtn = QtGui.QPushButton(u'拷贝文件')
         self.deleteDirBtn = QtGui.QPushButton(u'删除目录')
@@ -96,7 +96,8 @@ class CopyFileWidget(QtGui.QWidget):
 
     def startFileBtnClick(self):
         srcFilePath = unicode(self.srcFilePathEdit.text())
-        srcFilePath = srcFilePath if srcFilePath.strip() else str("Y:\work_src\gitlab\I13\HLOS")
+        if srcFilePath and not srcFilePath.startswith(u'Y:\work_src\gitlab'):
+            srcFilePath = str("Y:\\work_src\\gitlab\\I13\HLOS\\") + srcFilePath
         srcFilePath = srcFilePath.replace('/', '\\')
         self._runSysCmd.run(['explorer.exe', srcFilePath])
 

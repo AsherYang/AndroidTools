@@ -36,15 +36,18 @@ class CopyFileWidget(QtGui.QWidget):
         self.srcFilePathEdit.setMinimumHeight(25)
         self.destFilePathEdit.setMinimumHeight(25)
 
-        self.srcFilePathEdit.setPlaceholderText(_fromUtf8("Y:\work_src\gitlab\I13\HLOS"))
-        self.destFilePathEdit.setPlaceholderText(_fromUtf8("G:\copyfile"))
+        self.srcFilePathEdit.setText(_fromUtf8("Y:\work_src\gitlab\I13\HLOS"))
+        self.destFilePathEdit.setText(_fromUtf8("G:\copyfile"))
 
         self.copyFileBtn = QtGui.QPushButton(u'拷贝文件')
         self.deleteDirBtn = QtGui.QPushButton(u'删除目录')
+        self.startFileBtn = QtGui.QPushButton(u'打开文件')
         self.copyFileBtn.setFixedSize(100, 30)
         self.deleteDirBtn.setFixedSize(100, 30)
+        self.startFileBtn.setFixedSize(100, 30)
         self.copyFileBtn.connect(self.copyFileBtn, QtCore.SIGNAL('clicked()'), self.copyFileBtnClick)
         self.copyFileBtn.connect(self.deleteDirBtn, QtCore.SIGNAL('clicked()'), self.deleteDirBtnClick)
+        self.startFileBtn.connect(self.startFileBtn, QtCore.SIGNAL('clicked()'), self.startFileBtnClick)
 
         filePathForm.addRow(srcFilePathLabel, self.srcFilePathEdit)
         filePathForm.addRow(destFilePathLabel, self.destFilePathEdit)
@@ -53,6 +56,7 @@ class CopyFileWidget(QtGui.QWidget):
         operBtnsLayout.addStretch(1)
         operBtnsLayout.addWidget(self.copyFileBtn)
         operBtnsLayout.addWidget(self.deleteDirBtn)
+        operBtnsLayout.addWidget(self.startFileBtn)
         mainLayout.addLayout(filePathForm)
         mainLayout.addLayout(operBtnsLayout)
         self.setLayout(mainLayout)
@@ -89,6 +93,12 @@ class CopyFileWidget(QtGui.QWidget):
         destFilePath = unicode(self.destFilePathEdit.text())
         destFilePath = destFilePath if destFilePath.strip() else str("G:\copyfile")
         FileUtil.removeDirs(destFilePath)
+
+    def startFileBtnClick(self):
+        srcFilePath = unicode(self.srcFilePathEdit.text())
+        srcFilePath = srcFilePath if srcFilePath.strip() else str("Y:\work_src\gitlab\I13\HLOS")
+        srcFilePath = srcFilePath.replace('/', '\\')
+        self._runSysCmd.run(['explorer.exe', srcFilePath])
 
     def setTips(self, text):
         self.tipsLabel.setText(text)

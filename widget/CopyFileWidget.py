@@ -97,8 +97,13 @@ class CopyFileWidget(QtGui.QWidget):
     def startFileBtnClick(self):
         srcFilePath = unicode(self.srcFilePathEdit.text())
         if srcFilePath and not srcFilePath.startswith(u'Y:\work_src\gitlab'):
-            srcFilePath = str("Y:\\work_src\\gitlab\\I13\HLOS\\") + srcFilePath
+            if srcFilePath.startswith("\\") or srcFilePath.startswith("/"):
+                i13dir = str("Y:\\work_src\\gitlab\\I13\HLOS")
+            else:
+                i13dir = str("Y:\\work_src\\gitlab\\I13\HLOS\\")
+            srcFilePath = i13dir + srcFilePath
         srcFilePath = srcFilePath.replace('/', '\\')
+        print srcFilePath
         self._runSysCmd.run(['explorer.exe', srcFilePath])
 
     def setTips(self, text):

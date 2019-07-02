@@ -46,7 +46,7 @@ class CopyFileWidget(QtGui.QWidget):
         self.deleteDirBtn.setFixedSize(100, 30)
         self.startFileBtn.setFixedSize(100, 30)
         self.copyFileBtn.connect(self.copyFileBtn, QtCore.SIGNAL('clicked()'), self.copyFileBtnClick)
-        self.copyFileBtn.connect(self.deleteDirBtn, QtCore.SIGNAL('clicked()'), self.deleteDirBtnClick)
+        self.deleteDirBtn.connect(self.deleteDirBtn, QtCore.SIGNAL('clicked()'), self.deleteDirBtnClick)
         self.startFileBtn.connect(self.startFileBtn, QtCore.SIGNAL('clicked()'), self.startFileBtnClick)
 
         filePathForm.addRow(srcFilePathLabel, self.srcFilePathEdit)
@@ -67,6 +67,8 @@ class CopyFileWidget(QtGui.QWidget):
         destFilePath = unicode(self.destFilePathEdit.text())
         fileListEdit = str(self.fileListEdit.toPlainText())
         if not fileListEdit:
+            tips = unicode("请在文件集合框中输入拷贝文件路径")
+            self.setTips(_fromUtf8(tips))
             return
         srcFilePath = srcFilePath if srcFilePath.strip() else str("Y:\work_src\gitlab\I13\HLOS")
         destFilePath = destFilePath if destFilePath.strip() else str("G:\copyfile")
@@ -76,6 +78,8 @@ class CopyFileWidget(QtGui.QWidget):
         reFileStr = r'(.*\S)'
         fileList = re.findall(reFileStr, fileListEdit)
         if not fileList:
+            tips = unicode("没有在文件集合中找到文件路径")
+            self.setTips(_fromUtf8(tips))
             return
         for fileName in fileList:
             if not fileName:

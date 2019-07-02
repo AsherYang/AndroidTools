@@ -94,19 +94,38 @@ def isFileOrDirExist(filePath):
     return os.path.exists(filePath)
 
 
-# 拷贝文件
-def copyFile(srcFile, destFile):
-    if not os.path.isfile(srcFile):
-        return
-    fpath, fname = os.path.split(destFile)
-    if not os.path.exists(fpath):
-        os.makedirs(fpath)
-    shutil.copyfile(srcFile, destFile)
+# 拷贝文件/文件夹
+def copyFile(srcDir, destDir, startSrcDir, copyFileName):
+    if copyFileName:
+        srcFile = os.path.join(srcDir, copyFileName)
+    else:
+        srcFile = srcDir
+    # print '-->srcFile:%s, destFile:%s, copyFile:%s' % (srcFile, destFile, copyFileName)
+    # print '--is--',os.path.isdir(srcFile)
+    if os.path.isdir(srcFile):
+        for root, dirs, files in os.walk(srcFile):
+            for dirTmp in dirs:
+                # print 'root: %s, dirs:%s, files:%s ' % (root, dirTmp, files)
+                copyFile(os.path.join(root, dirTmp), destDir, startSrcDir, None)
+            for fileTmp in files:
+                copyFile(root, destDir, startSrcDir, fileTmp)
+    else:
+        destPath = srcFile.replace(startSrcDir, "")
+        if destPath.startswith("/") or destPath.startswith("\\"):
+            destPath = destPath[1:]
+            destPath = destPath.replace("/", "\\")
+        destFile = os.path.join(destDir, destPath)
+        fpath, fname = os.path.split(destFile)
+        if not os.path.exists(fpath):
+            os.makedirs(fpath)
+        # print '-->222 srcFile: %s, destFile:%s' %(srcFile, destFile)
+        shutil.copyfile(srcFile, destFile)
 
 
 # 删除文件夹
 def removeDirs(directory):
-    shutil.rmtree(directory)
+    if os.path.exists(directory):
+        shutil.rmtree(directory)
 
 
 if __name__ == '__main__':

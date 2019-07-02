@@ -70,8 +70,8 @@ class CopyFileWidget(QtGui.QWidget):
             tips = unicode("请在文件集合框中输入拷贝文件路径")
             self.setTips(_fromUtf8(tips))
             return
-        srcFilePath = srcFilePath if srcFilePath.strip() else str("Y:\work_src\gitlab\I13\HLOS")
-        destFilePath = destFilePath if destFilePath.strip() else str("G:\copyfile")
+        srcFilePath = (srcFilePath if srcFilePath.strip() else str("Y:\\work_src\\gitlab\\I13\\HLOS"))
+        destFilePath = (destFilePath if destFilePath.strip() else str("G:\\copyfile"))
         FileUtil.mkdirNotExist(destFilePath)
         # print fileListEdit
         # .* 匹配除换行符 \n 之外的任何字符 \S 匹配任何非空白字符, 此处用来匹配保存在string中的文件目录格式
@@ -84,18 +84,21 @@ class CopyFileWidget(QtGui.QWidget):
         for fileName in fileList:
             if not fileName:
                 continue
-            srcFile = os.path.join(srcFilePath, fileName.replace("/", "\\"))
-            destFile = os.path.join(destFilePath, fileName.replace("/", "\\"))
+            if fileName.startswith("/") or fileName.startswith("\\"):
+                fileName = fileName[1:]
+            fileName = fileName.replace("/", "\\")
+            # srcFile = os.path.join(srcFilePath, fileName)
+            # destFile = os.path.join(destFilePath, fileName)
             # print 'srcFilePath: ', srcFile
             # print 'destFile: ', destFile
-            FileUtil.copyFile(srcFile, destFile)
+            FileUtil.copyFile(srcFilePath, destFilePath,srcFilePath, fileName)
         tips = unicode("拷贝完成: ") + destFilePath
         self.setTips(_fromUtf8(tips))
         self._runSysCmd.run(['explorer.exe', destFilePath])
 
     def deleteDirBtnClick(self):
         destFilePath = unicode(self.destFilePathEdit.text())
-        destFilePath = destFilePath if destFilePath.strip() else str("G:\copyfile")
+        destFilePath = (destFilePath if destFilePath.strip() else str("G:\\copyfile"))
         FileUtil.removeDirs(destFilePath)
 
     def startFileBtnClick(self):

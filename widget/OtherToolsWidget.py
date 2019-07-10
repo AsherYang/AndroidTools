@@ -16,6 +16,7 @@ from widget.DesktopWidget import DesktopWidget
 from widget.WorkOrderWidget import WorkOrderWidget
 from widget.TranslateWidget import TranslateWidget
 from widget.CopyFileWidget import CopyFileWidget
+from widget.UnzipFileWidget import UnzipFileWidget
 from view.TipsOperateWin import TipsOperateWin
 
 
@@ -44,6 +45,7 @@ class OtherToolsWidget(QtGui.QWidget):
         workOrderBtn = QtGui.QPushButton(_fromUtf8("工单处理"))
         translateBtn = QtGui.QPushButton(_fromUtf8("有道翻译"))
         copyFileBtn = QtGui.QPushButton(_fromUtf8("文件拷贝"))
+        unzipFileBtn = QtGui.QPushButton(_fromUtf8("文件解压"))
         todoListBtn = QtGui.QPushButton(_fromUtf8("todoList"))
         lockScreenBtn.connect(lockScreenBtn, QtCore.SIGNAL('clicked()'), self.lockScreenBtnClick)
         self.keepScreenOnBtn.connect(self.keepScreenOnBtn, QtCore.SIGNAL('clicked()'), self.keepScreenOnBtnClick)
@@ -54,6 +56,7 @@ class OtherToolsWidget(QtGui.QWidget):
         workOrderBtn.connect(workOrderBtn, QtCore.SIGNAL('clicked()'), self.showWorkOrderWidget)
         translateBtn.connect(translateBtn, QtCore.SIGNAL('clicked()'), self.showTranslateWidget)
         copyFileBtn.connect(copyFileBtn, QtCore.SIGNAL('clicked()'), self.showCopyFileWidget)
+        unzipFileBtn.connect(unzipFileBtn, QtCore.SIGNAL('clicked()'), self.showUnzipFileWidget)
         todoListBtn.connect(todoListBtn, QtCore.SIGNAL('clicked()'), self.showTodoListWidget)
 
         firstHBox.addWidget(lockScreenBtn)
@@ -67,6 +70,7 @@ class OtherToolsWidget(QtGui.QWidget):
         secondHBox.addWidget(workOrderBtn)
         secondHBox.addWidget(translateBtn)
         secondHBox.addWidget(copyFileBtn)
+        secondHBox.addWidget(unzipFileBtn)
         secondHBox.addWidget(todoListBtn)
         secondHBox.addStretch(1)
         secondGroupBox.setLayout(secondHBox)
@@ -130,6 +134,11 @@ class OtherToolsWidget(QtGui.QWidget):
         copyFileWidget = CopyFileWidget()
         self.containerWidget.addWidget(copyFileWidget)
         self.containerWidget.setCurrentWidget(copyFileWidget)
+
+    def showUnzipFileWidget(self):
+        unzipFileWidget = UnzipFileWidget()
+        self.containerWidget.addWidget(unzipFileWidget)
+        self.containerWidget.setCurrentWidget(unzipFileWidget)
 
     def showTodoListWidget(self):
         pass

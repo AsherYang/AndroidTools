@@ -52,6 +52,11 @@ class CopyFileWidget(QtGui.QWidget):
         filePathForm.addRow(srcFilePathLabel, self.srcFilePathEdit)
         filePathForm.addRow(destFilePathLabel, self.destFilePathEdit)
         filePathForm.addRow(fileListLabel, self.fileListEdit)
+        # 将表单最后一个文本框设置为可垂直拉伸 QtGui.QSizePolicy
+        policy = self.fileListEdit.sizePolicy()
+        policy.setVerticalStretch(1)
+        self.fileListEdit.setSizePolicy(policy)
+
         operBtnsLayout.addWidget(self.tipsLabel)
         operBtnsLayout.addStretch(1)
         operBtnsLayout.addWidget(self.copyFileBtn)

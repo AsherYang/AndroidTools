@@ -41,6 +41,12 @@ class WorkOrderWidget(QtGui.QWidget):
         orderDeleteBtn = QtGui.QPushButton(_fromUtf8("删除"))
         orderQueryWeekBtn = QtGui.QPushButton(_fromUtf8("导出本周"))
         orderQueryAllBtn = QtGui.QPushButton(_fromUtf8("导出所有"))
+
+        orderAddBtn.setFixedSize(100, 30)
+        orderDeleteBtn.setFixedSize(100, 30)
+        orderQueryWeekBtn.setFixedSize(100, 30)
+        orderQueryAllBtn.setFixedSize(100, 30)
+
         orderAddBtn.connect(orderAddBtn, QtCore.SIGNAL('clicked()'), self.orderAddMethod)
         orderDeleteBtn.connect(orderDeleteBtn, QtCore.SIGNAL('clicked()'), self.orderDeleteMethod)
         orderQueryWeekBtn.connect(orderQueryWeekBtn, QtCore.SIGNAL('clicked()'), self.exportWeekData)
@@ -55,6 +61,14 @@ class WorkOrderWidget(QtGui.QWidget):
         workOrderForm.addRow(orderNumLabel, self.orderNumEdit)
         workOrderForm.addRow(orderTitleLabel, self.orderTitleEdit)
         workOrderForm.addRow(orderReasonLabel, self.orderReasonEdit)
+
+        # 将表单最后一个文本框设置为可垂直拉伸 QtGui.QSizePolicy
+        policy = self.orderReasonEdit.sizePolicy()
+        policy.setVerticalStretch(1)
+        self.orderReasonEdit.setSizePolicy(policy)
+
+        operateHBox.addWidget(self.tipLabel)
+        operateHBox.addStretch(1)
         operateHBox.addWidget(orderAddBtn)
         operateHBox.addWidget(orderDeleteBtn)
         operateHBox.addWidget(orderQueryWeekBtn)
@@ -63,8 +77,6 @@ class WorkOrderWidget(QtGui.QWidget):
         mainLayout.addLayout(workOrderForm)
         mainLayout.addSpacing(5)
         mainLayout.addLayout(operateHBox)
-        mainLayout.addWidget(self.tipLabel)
-        mainLayout.addStretch(1)
         self.setLayout(mainLayout)
 
     def setTips(self, text):
